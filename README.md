@@ -4,7 +4,7 @@ This is the offical LTS release of the Burd IRC client. This is an IRC client th
 
 ## LTS
 
-This client is in LTS, and will be supported until December 25th, 2025. This date may be extended to a later point, but not to an earlier one. 
+This client is in LTS, and will be supported until December 25th, 2025. This date may be changed to a later point, but not to an earlier one. 
 
 ## Installation
 
