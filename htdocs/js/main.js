@@ -3,7 +3,7 @@ let release = "Beta"; //set by websocket backend
 
 const settings = {
     "fileService": "https://api.haxed.net/0x0.php",
-    "firstRun": true,
+    "firstRun": false,
     "language": "english.json",
     "animation": 300,
     "maxHistory": 150,
