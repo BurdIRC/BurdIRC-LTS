@@ -13,12 +13,15 @@ class IRC{
         this.connected = false;
         this.reconnectTimer = 0;
         this.whoPollChannels = [];
-        this.pollState = 1;
+        this.pollState = 0;
+
         this.whoTimer = setInterval(function(){
-            if(self.connected && self.pollState == 0 && self.whoPollChannels.length > 0){
-                self.sendData("WHO " + self.whoPollChannels[0]);
-                self.pollState = 1;
-                self.whoPollChannels.splice(0, 1);
+            if(settings.whoPolling){
+                if(self.connected && self.pollState == 0 && self.whoPollChannels.length > 0){
+                    self.sendData("WHO " + self.whoPollChannels[0]);
+                    self.pollState = 1;
+                    self.whoPollChannels.splice(0, 1);
+                }
             }
         },5000);
         
@@ -689,7 +692,7 @@ class IRC{
             case E.RPL_WHOREPLY:
                 //this.pollState = 0;
                 //:tin.libera.chat 352 duckgoose # ~matt user/duckgoose tin.libera.chat duckgoose H :0 Matt <matt@haxed.net>"
-                if(bits[8] == "G"){
+                if(bits[8].indexOf("G") > -1){
                     this.setIdleMessage(bits[7], "Away", bits[7] + "!" + bits[4] + "@" + bits[5]);
                 }else{
                     this.setIdleMessage(bits[7], "", bits[7] + "!" + bits[4] + "@" + bits[5]);
@@ -697,7 +700,11 @@ class IRC{
                 break;
             
             case E.RPL_ENDOFWHO:
-                //this.pollState = 0;
+                this.pollState = 0;
+                if(bits[3].toLowerCase() == GUI.current.name.toLowerCase()){
+                    GUI.updateChannelNames(GUI.current.cID,GUI.current.type,GUI.current.name);
+                }
+                //a[":1 :zirconium.libera.chat 315 duckgoose ##chat :End of /WHO list."]
                 break;
                 
             

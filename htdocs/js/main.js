@@ -19,6 +19,8 @@ const settings = {
     
     "zoom": 1,
     
+    "whoPolling": true,
+    
     "sounds": {
         "highlight": "/sounds/state-change_confirm-down.ogg",
         "pm": "/sounds/hero_simple-celebration-03.ogg",
