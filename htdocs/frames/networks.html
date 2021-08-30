@@ -1,0 +1,304 @@
+<html>
+    <head>
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100;0,300;0,500;1,700&display=swap" rel="stylesheet">
+        <link href="../css/menu.css" rel="stylesheet">
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        
+        <title>Burd Web IRC</title>
+
+        <script>
+            let lang = {};
+            let servers = {};
+            const mouse = {x:0,y:0};
+        
+            const menu = {
+                callbacks: {},
+                create: function(e,a){
+                    if(a==undefined) a = {};
+                    if(a.extend==undefined){
+                        $("div.menu").remove();
+                    }else{
+                        $("div.extended-menu").remove();
+                    }
+                    let menuHTML = '<div class="menu">';
+                    for(let i in e){
+                        if(e[i].text == "-"){
+                            menuHTML += '<div class="menu-item menu-seperate">&nbsp;</div>';
+                        }else if(e[i].title != undefined){
+                            menuHTML += '<div class="menu-item menu-title">' + e[i].title + '</div>';
+                        }else{
+                            const mid = randomID();
+                            if(e[i].icon == ""){
+                                menuHTML += '<div class="menu-item" id="' + mid + '">';
+                            }else{
+                                menuHTML += '<div class="menu-item" id="' + mid + '" style="background-image:url(' + e[i].icon + ')">';
+                            }
+                            menuHTML += '<div class="menu-text">' + e[i].text + '</div>';
+                            if(e[i].more) menuHTML += '<div class="menu-more">&nbsp;</div>';
+                            menuHTML += '</div>';
+                            e[i].id = mid;
+                            menu.callbacks[mid] = e[i];
+                        }
+                    }
+                    menuHTML += '</div>';
+                    if(a.extend==undefined){
+                        $("body").append(menuHTML);
+                        $("div.menu").css("top", mouse.y).css("left", mouse.x - 170).hide().fadeIn(100);
+                    }else{
+                        $("body").append(menuHTML.replace("\"menu\"", "\"menu extended-menu\""));
+                        $("div.menu:last").css("top", mouse.y - 10).css("left", mouse.x - 10).hide().fadeIn(100);
+                    }
+                    if($("div.menu:last").position().top + $("div.menu:last").height() > $("#app").height()){
+                        $("div.menu:last").css("top", $("#app").height() - $("div.menu:last").height() - 10 );
+                    }
+                    if($("div.menu:last").position().left + $("div.menu:last").width() > $("#app").width()){
+                       // $("div.menu:last").css("left", $("#app").width() - $("div.menu:last").width() - 10 );
+                    }
+                },
+                call: function(e){
+                    if(menu.callbacks[e].more){
+                        
+                    }else{
+                        $("div.menu").remove();
+                    }
+                    menu.callbacks[e].callback(menu.callbacks[e]);
+                }
+            }
+                    
+        
+        
+            $(function(){
+                window.parent.postMessage({c: "load_complete"}, '*');
+                window.parent.postMessage({c: "get_lang"}, '*');
+                window.parent.postMessage({c: "get_servers"}, '*');
+                $("div#close").on("click", function(){
+                    window.parent.postMessage({c: "close_miniframe"}, '*');
+                });
+                $("input#new").on("click", function(){
+                    window.location.href = "newnetwork.html";
+                });
+                $("body").on("mousemove", function(e){
+                    mouse.x = e.pageX;
+                    mouse.y = e.pageY;
+                });
+                
+                $("body").on("click", "div.buttons", function(e){
+                    menu.create([
+                        {
+                            text: lang.networks.remove,
+                            icon: "/images/close.svg",
+                            more: false,
+                            sid: $(this).parent().attr("sid"),
+                            callback: function(mo){
+                                window.parent.postMessage({c: "remove_server", id: mo.sid}, '*');
+                            }
+                        },
+                        {
+                            text: lang.networks.edit,
+                            icon: "/images/playlist-edit.svg",
+                            more: false,
+                            sid: $(this).parent().attr("sid"),
+                            callback: function(mo){
+                                window.location.href = "editnetwork.html?sid=" + mo.sid;
+                            }
+                        }
+                    ]);
+                });
+
+                $("body").on("mousedown", function(e){
+                    if($(e.target).parents('div.menu').length == 0){
+                        $("div.menu").remove();
+                    }
+                });
+                $("body").on("mouseup", "div.menu-item", function(e){
+                    menu.call($(this).attr("id"));
+                });
+                $("body").on("mouseover", ".svgicon", function(e){
+                    $(this).attr("icon", $(this).css("background-image"));
+                    $(this).css("background-image", $(this).attr("icon").replace("D9E0EF", "FFFFFF"));
+                });
+                $("body").on("click", "div.network", function(e){
+                    if($(e.target).hasClass("buttons") == false){
+                        window.parent.postMessage({c: "close_miniframe"}, '*');
+                        window.parent.postMessage({c: "connect", id: $(this).attr("sid")}, '*');
+                    }
+                });
+                
+                $("body").on("mouseout", ".svgicon", function(e){
+                    $(this).css("background-image", $(this).attr("icon"));
+                });
+                            
+                
+                
+            });
+           
+            
+            
+            window.addEventListener('message', function(e) {
+                console.log(e);
+                // Get the sent data
+                const data = e.data;
+                switch(data.c){
+                    case "lang":
+                        $("#maintitle").text(data.lang.networks.networks);
+                        $("#new").val(data.lang.networks.add_new_network);
+                        lang = data.lang;
+                        break;
+                    case "servers":
+                        servers = data.servers;
+                        $("div#nets").html("");
+                        for(let i in servers){
+                            $("div#nets").append('<div class="network" sid="' + servers[i].guid + '"><div class="img">' + servers[i].server.replace("irc.", "").replace("chat.", "").substr(0,2).toUpperCase() + '</div><div class="netname">'+ servers[i].server +'</div><div class="netnick">' + servers[i].nick + '</div><div class="buttons">&nbsp;</div></div>');
+                        }
+                        break;
+                }
+            });
+            function randomID() {
+                return 'axxxxxxxxxxxxxxxxxx'.replace(/[x]/g, function(c) {
+                    let r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                });
+            }
+        </script>
+
+        <style>
+
+            
+            body,html{
+                background:white;
+                padding:5px;
+                margin:0;
+                height:calc(100% - 10px);
+                width:calc(100% - 10px);
+                font-family: 'Open Sans', sans-serif;
+                font-size:20px;
+                image-rendering: -webkit-optimize-contrast;
+            }
+
+            div#close{
+                position: absolute;
+                height: 30px;
+                width: 30px;
+                top: 10px;
+                left: calc(100% - 40px);
+                background:url(/images/close.svg);
+                background-size: 25px;
+                background-position: center center;
+                background-repeat: no-repeat;
+                opacity: 1;
+                cursor: pointer;
+                border-radius: 50%;
+                opacity:0.5;
+            }
+            div#close:hover{
+                opacity:1;
+            }
+            
+            div#nets{
+                height: 450px;
+            }
+            input{
+                background: #5865F2;
+                padding: 0;
+                margin: 0;
+                font-weight: 400;
+                color: white;
+                padding: 5px;
+                border: 1px solid #353535;
+                font-family: 'Open Sans', sans-serif;
+                border-radius:5px;
+                cursor:pointer;
+            }
+            input:hover{
+                background:#414dd2;
+            }
+            div.network{
+                height: 50px;
+                border-radius: 10px;
+                cursor:pointer;
+                margin-bottom:5px;
+                background:url(/images/chevron-right.svg);
+                background-size: 35px;
+                background-position:right center;
+                background-repeat: no-repeat;
+                position:relative;
+            }
+            div.network:hover{
+                background-color: #d4d7ff;
+                
+            }
+            
+            div.network:hover div.buttons{
+                display:block;
+                
+
+            }
+            
+            div.network div.img{
+                height:50px;
+                width:50px;
+                background:#5865F2;
+                border-radius:50%;
+                color:white;
+                font-size:25px;
+                font-weight:400;
+                text-align:center;
+                line-height: 48px;
+                float:left;
+                
+            }
+            div.netname{
+                font-size:17px;
+                margin-left:60px;
+                font-weight:bold;
+                padding-top:2px;
+            }
+            div.netnick{
+                font-size:15px;
+                margin-left:60px;
+            }
+            input[type='button']:hover{
+                border-color:black;
+            }
+            div.buttons{
+                height: 30px;
+                width: 30px;
+                position: absolute;
+                background: red;
+                top: 10px;
+                left: 320px;
+                background:url(/images/dots-vertical-circle-outline.svg);
+                background-size: 24px;
+                background-position:center center;
+                background-repeat: no-repeat;
+                display:none;
+            }
+            div.buttons:hover{
+                background-size:30px;
+            }
+            h3{
+                margin:0;
+                margin-bottom:10px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="close">&nbsp;</div>
+        <h3 id="maintitle">$networks</h3>
+        <div id="nets">
+            <!--
+            <div class="network">
+                <div class="img">FE</div>
+                <div class="netname">irc.freenode.net</div>
+                <div class="netnick">duckgoose</div>
+                <div class="buttons">&nbsp;</div>
+            </div>
+            -->
+
+        </div>
+        <input type="button" style="width:100%;margin-top:5px;" value="$addnetwork" id="new">
+    </body>
+</html>

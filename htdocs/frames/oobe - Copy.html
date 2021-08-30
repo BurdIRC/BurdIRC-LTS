@@ -1,0 +1,105 @@
+<html>
+    <head>
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100;0,300;0,500;1,700&display=swap" rel="stylesheet">
+        
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        
+        <title>Burd Web IRC</title>
+
+        <script>
+            $(function(){
+                window.parent.postMessage({c: "load_complete"}, '*');
+                $("div#close").on("click", function(){
+                    window.parent.postMessage({c: "close_iframe"}, '*');
+                });
+            });
+        </script>
+
+        <style>
+            :root {
+
+              color-scheme: dark;
+
+            }
+
+
+            
+            body,html{
+                padding:0;
+                margin:0;
+                height:100%;
+                width:100%;
+                color:white;
+                font-family: 'Open Sans', sans-serif;
+                font-size:20px;
+                image-rendering: -webkit-optimize-contrast;
+                overflow:hidden;
+  
+            }
+            div#app{
+                background:#0D1117 url('/images/white/birby_mcbirbface.png') no-repeat;
+                background-size:300px;
+                width:800px;
+                margin:0 auto;
+                height:100%;
+                position:relative;
+            }
+            div#nav{
+                width:200px;
+                background:#161B22;
+                height:100%;
+                border-right:1px solid #3e4148;
+                padding-right:10px;
+                color:#d8d8d8;
+                float:left;
+            }
+            div#close{
+                position:absolute;
+                height:30px;
+                width:30px;
+                top:5px;
+                left:750px;
+                background:#323c4a url('/images/white/close.svg');
+                background-size:25px;
+                background-position:center center;
+                background-repeat:no-repeat;
+                opacity:0.6;
+                cursor:pointer;
+                border-radius:50%;
+                border:2px solid white;
+            }
+            div#close:hover{
+                opacity:1;
+            }
+            h4{
+                font-size:15px;
+                margin:0;
+                padding:0;
+                padding:5px;
+            }
+            div.clear{
+                height:0px;
+                clear:both;
+                
+            }
+            div.ainfo{
+                margin-bottom:5px;
+            }
+            a{
+                color:#8fc6ff;
+            }
+            a:hover{
+                color:white;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app">
+            <div id="close">&nbsp;</div>
+            <h2>Hello</h2>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,380 @@
+<html>
+    <head>
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100;0,300;0,500;1,700&display=swap" rel="stylesheet">
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <link href="../css/menu.css" rel="stylesheet">
+        <title>Burd Web IRC</title>
+
+        <script>
+            let editID = "";
+            let lang = {};
+            let newNetwork = {};
+        
+            $(function(){
+                editID = document.location.href.split("sid=")[1];
+                window.parent.postMessage({c: "load_complete"}, '*');
+                window.parent.postMessage({c: "get_lang"}, '*');
+                window.parent.postMessage({c: "get_server", id: editID}, '*');
+                $("div#close").on("click", function(){
+                    window.location.href = "networks.html";
+                });
+                $("input#new").on("click", function(){
+                    if($("input#address").val() == "") return showError(lang.networks.no_server);
+                    if($("input#port").val() == "") return showError(lang.networks.no_port);
+                    if($("input#nick").val() == "") return showError(lang.networks.no_nick);
+                    
+                    if($("input#realname").val() == "") $("input#realname").val($("input#nick").val());
+                    if($("input#ident").val() == "") $("input#ident").val($("input#nick").val());
+                    
+                    /* now we set all the data in newNetwork */
+                    
+                    newNetwork.guid = editID;
+                    newNetwork.server = address.value;
+                    newNetwork.port = port.value;
+                    newNetwork.TLS = $("div#tls").hasClass("checked");
+                    newNetwork.serverPassword = serverpassword.value;
+                    newNetwork.nick = nick.value;
+                    newNetwork.realName = realname.value;
+                    newNetwork.ident = ident.value;
+                    newNetwork.authType = authtype.value.toLowerCase();
+                    newNetwork.authUser = username.value;
+                    newNetwork.authPassword = password.value;
+                    newNetwork.autoReconnect = $("div#autoreconnect").hasClass("checked");
+                    newNetwork.onStartup = $("div#startup").hasClass("checked");
+                    
+                    window.parent.postMessage({c: "edit_server", server: newNetwork}, '*');
+                    
+                    //window.location.href = "networks.html";
+                });
+                $("div.check").on("click", function(){
+                    if($(this).hasClass("checked")){
+                        $(this).removeClass("checked");
+                    }else{
+                        $(this).addClass("checked");
+                    }
+                });
+                
+                $("div#error").on("click", function(){
+                    $(this).hide();
+                });
+                
+                $("body").on("click", "a", function(e){
+                    const scheme = $(this).attr("href").split(":")[0];
+                    if(scheme){
+                        switch(scheme){
+                            case "cert":
+                                $("#certFile").click();
+                                e.preventDefault();
+                                break;
+                        }
+                    }
+                });
+                
+                $('#certFile').on('change', function () {
+                    const fileReader = new FileReader();
+                    fileReader.onload = function () {
+                        const data = atob(fileReader.result.split(";base64,")[1]);
+                        if(data.indexOf("-----BEGIN CERTIFICATE-----") == -1){
+                            alert("The file is not a valid certificate");
+                            return;
+                        }
+                        if(data.indexOf("-----BEGIN RSA PRIVATE KEY-----") == -1){
+                            alert("The certificate file does not contain a valid key");
+                            return;
+                        }
+                        newNetwork.authPEM = fileReader.result.split(";base64,")[1];
+                        alert("The certificate has been set");
+                    };
+                    fileReader.readAsDataURL($('#certFile').prop('files')[0]);
+                });
+                
+            });
+            
+            window.addEventListener('message', function(e) {
+                console.log(e);
+                // Get the sent data
+                const data = e.data;
+                switch(data.c){
+                    case "server_edited":
+                        window.location.href = "networks.html";
+                        break;
+                
+                    case "server":
+                        newNetwork = data.server;
+                        address.value = newNetwork.server;
+                        port.value = newNetwork.port;
+                        serverpassword.value = newNetwork.serverPassword;
+                        nick.value = newNetwork.nick;
+                        realname.value = newNetwork.realName;
+                        ident.value = newNetwork.ident;
+                        authtype.value = newNetwork.authType;
+                        username.value = newNetwork.authUser;
+                        password.value = newNetwork.authPassword;
+                        
+                        
+                        if(newNetwork.TLS) $("div#tls").addClass("checked");
+                        if(newNetwork.Startup) $("div#startup").addClass("checked");
+                        if(newNetwork.autoReconnect) $("div#autoreconnect").addClass("checked");
+                        break;
+                
+                    case "lang":
+                        lang = data.lang;
+                        $("#maintitle").text(data.lang.networks.edit_network);
+                        $("#new").val(data.lang.networks.edit);
+                        $("#netinfo").text(data.lang.networks.net_info);
+                        $("#addresstitle").text(data.lang.networks.address);
+                        $("#porttitle").text(data.lang.networks.port);
+                        $("#tlstitle").text(data.lang.networks.tls);
+                        $("#serverpasstitle").text(data.lang.networks.server_password);
+                        $("#serverpasstitle").text(data.lang.networks.server_password);
+                        $(".optional").text(data.lang.networks.optional);
+                        $("#userinfo").text(data.lang.networks.user_info);
+                        $("#nicktitle").text(data.lang.networks.nick);
+                        $("#realnametitle").text(data.lang.networks.real_name);
+                        $("#identtitle").text(data.lang.networks.ident);
+                        $("#authtitle").text(data.lang.networks.authentication);
+                        $("#typetitle").text(data.lang.networks.type);
+                        $("#usertitle").text(data.lang.networks.user);
+                        $("#passwordtitle").text(data.lang.networks.password);
+                        $("#misctitle").text(data.lang.networks.misc);
+                        $("#startuptitle").text(data.lang.networks.connect_startup);
+                        $("#reconnecttitle").text(data.lang.networks.auto_reconnect);
+                        $("#certtitle").text(data.lang.networks.cert);
+                        break;
+                }
+            });
+            
+            const showError = function(e){
+                $("div#error").text("Something went wrong");
+                $("div#error").text(e).show();
+                setTimeout(function(){
+                    $("div#error").fadeOut(300);
+                },4000);
+            }
+            
+            const randomID = function() {
+                return 'axxxxxxxxxxxxxxxxxxxxx'.replace(/[x]/g, function(c) {
+                    let r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                });
+            }
+            
+        </script>
+
+        <style>
+
+            
+            body,html{
+                background:white;
+                padding:5px;
+                margin:0;
+                height:calc(100% - 10px);
+                width:calc(100% - 10px);
+                font-family: 'Open Sans', sans-serif;
+                font-size:20px;
+                image-rendering: -webkit-optimize-contrast;
+                overflow: hidden;
+            }
+            
+            div.check{
+                height: 20px;
+                width: 20px;
+                background: url(/images/checkbox-blank-outline.svg);
+                background-size: 20px;
+                background-position: center center;
+                background-repeat: no-repeat;
+                cursor:pointer;
+            }
+            div.checked{
+                background-image: url(/images/checkbox-marked.svg);
+            }
+
+            div#close{
+                position: absolute;
+                height: 30px;
+                width: 30px;
+                top: 10px;
+                left: calc(100% - 40px);
+                background:url(/images/arrow-left.svg);
+                background-size: 25px;
+                background-position: center center;
+                background-repeat: no-repeat;
+                opacity: 1;
+                cursor: pointer;
+                border-radius: 50%;
+                opacity:0.5;
+            }
+            div#close:hover{
+                opacity:1;
+            }
+            
+            div#nets{
+                height: 430px;
+            }
+            input{
+                background: #5865F2;
+                padding: 0;
+                margin: 0;
+                font-weight: 400;
+                color: white;
+                padding: 5px;
+                border: 1px solid #353535;
+                font-family: 'Open Sans', sans-serif;
+                border-radius:5px;
+                cursor:pointer;
+            }
+            
+            input[type='text'],input[type='password'],select{
+                background: white;
+                padding: 0;
+                margin: 0;
+                font-weight: 400;
+                color: black;
+                padding: 5px;
+                border: 1px solid #353535;
+                font-family: 'Open Sans', sans-serif;
+                border-radius:5px;
+                cursor:text;
+            }
+            
+            div#nets input[type='text'],div#nets input[type='password'],select{
+                width:calc(100% - 10px);
+            }
+            
+            div.ititle{
+                font-weight:bold;
+                font-size:15px;
+                
+            }
+            div.input{
+                height:60px;
+            }
+            div.title{
+                clear:both;
+                padding-top:10px;
+                width:calc(100% - 5px);
+            }
+            select{
+                cursor:pointer;
+            }
+            
+            div.misc div.ititle{
+                font-weight:normal;
+            }
+            a{
+                color:blue;
+            }
+            input[type='button']:hover{
+                background:#414dd2;
+            }
+            #certFile{
+                display:none;
+            }
+            div#error{
+                position: absolute;
+                color: #7d0000;
+                background: #ffcece;
+                padding: 10px;
+                border-radius: 10px;
+                font-size: 15px;
+                border: 1px solid #7d0000;
+                display:none;
+                cursor:pointer;
+            }
+            h3{
+                padding:0;
+                margin:0;
+                margin-bottom:20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="error">Something went wrong</div>
+        <input type="file" id="certFile" accept=".pem">
+        <div id="close">&nbsp;</div>
+        <h3 id="maintitle">$networks</h3>
+        <div id="nets">
+        
+            <div class="title" id="netinfo" style="padding:0;">$netinfo</div>
+            
+        
+            <div class="input" style="width:240px;float:left;">
+                <div class="ititle" id="addresstitle">$address</div>
+                 <input type="text" id="address" value="irc.libera.chat">
+            </div>
+            <div class="input" style="width:100px;float:left;">
+                <div class="ititle" id="porttitle">$PORT</div>
+                <input type="text" id="port" value="6697">
+            </div>
+            <div class="input" style="width:30px;float:left;">
+                <div class="ititle" id="tlstitle">$TLS</div>
+                <div class="check" id="tls" style="margin: 0 auto;margin-top: 4px;">&nbsp;</div>
+            </div>
+            <!--
+            <div class="input" style="width:30px;float:left;">
+                <div class="ititle">PASS</div>
+                <div class="check" style="margin: 0 auto;margin-top: 4px;">&nbsp;</div>
+            </div>
+            -->
+            <div class="input" style="clear:both;">
+                <div class="ititle"><span id="serverpasstitle">$SERVER PASSWORD</span> <span style="font-weight:100;" class="optional">($optional)</span></div>
+                 <input type="password" id="serverpassword">
+            </div>
+            <div class="title" id="userinfo">$User Information</div>
+
+
+
+            <div class="input" style="width:128px;float:left;">
+                <div class="ititle" id="nicktitle">$NICK</div>
+                <input type="text" id="nick">
+            </div>
+            <div class="input" style="width:126px;float:left;">
+                <div class="ititle" id="realnametitle">$REAL NAME</div>
+                <input type="text" id="realname">
+            </div>
+            <div class="input" style="width:126px;float:left;">
+                <div class="ititle" id="identtitle">$IDENT</div>
+                <input type="text" id="ident" value="Burd">
+            </div>
+            
+            <div class="title"><span id="authtitle">$Authentication</span> <span style="font-weight:100;font-size:15px;" class="optional">($optional)</span></div>
+            
+            <div class="input" style="width:128px;float:left;">
+                <div class="ititle" id="typetitle">$TYPE</div>
+                <select id="authtype">
+                    <option value="none">None</option>
+                    <option value="nickserv">NickServ</option>
+                    <option value="sasl plain">SASL Plain</option>
+                    <option value="sasl ext">SASL Ext</option>
+                </select>
+            </div>
+            <div class="input" style="width:126px;float:left;">
+                <div class="ititle" id="usertitle">$USER</div>
+                <input type="text" id="username">
+            </div>
+            <div class="input" style="width:126px;float:left;">
+                <div class="ititle" id="passwordtitle">$PASSWORD</div>
+                <input type="password" id="password">
+            </div>
+            <div class="misc">
+                <div class="title" id="misctitle">$Misc <span style="font-weight:100;font-size:15px;" class="optional">($optional)</span></div>
+                <div class="input" style="width:140px;float:left;text-align:center;">
+                    <div class="ititle" id="startuptitle">$Connect at Start</div>
+                    <div class="check" id="startup" style="margin: 0 auto;margin-top: 4px;">&nbsp;</div>
+                </div>
+                <div class="input" style="width:130px;float:left;text-align:center;">
+                    <div class="ititle" id="reconnecttitle">$Auto reconnect</div>
+                    <div class="check" id="autoreconnect" style="margin: 0 auto;margin-top: 4px;">&nbsp;</div>
+                </div>
+                <div class="input" style="width:100px;float:left;text-align:center;">
+                    <div class="ititle" id="certtitle">$Cert</div>
+                    <div style="margin: 0 auto;margin-top: 4px;font-size:15px;"><a href="cert://">Select</a></div>
+                </div>
+            </div>
+        </div>
+        <input type="button" style="width:100%;margin-top:5px;" value="$addnetwork" id="new">
+    </body>
+</html>

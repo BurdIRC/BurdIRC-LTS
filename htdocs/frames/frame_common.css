@@ -1,0 +1,150 @@
+:root {
+  color-scheme: dark;
+}
+div.switch{
+    cursor:pointer;
+    background: url('/images/toggle-switch.svg') no-repeat center right;
+    background-size:42px;
+    display: flex;
+    height:32px;
+    align-items: center;
+    font-size:17px;
+    user-select: none; 
+    padding:5px;
+}
+div.switch:hover{
+    background-color:#e8e8e8;
+}
+div.off{
+    background-image: url('/images/toggle-switch-off.svg');
+}
+div.switch[theme='dark']{
+    background: url('/images/white/toggle-switch.svg') no-repeat center right;
+    background-size:42px;
+}
+div.switch[theme='dark']:hover{
+    background-color: #161b22;
+}
+div.off[theme='dark']{
+    background-image: url('/images/white/toggle-switch-off.svg');
+}
+h1,h2,h3,h4{
+    padding:0;
+    margin:0;
+    padding:5px;
+    padding-top:0px;
+}
+
+
+div[theme='dark'] input{
+    border: 1px solid #7a8594;
+    background: #323c4a;
+    padding: 5px;
+    border-radius: 5px;
+    font-family: 'Open Sans', sans-serif;
+}
+input[theme='dark']{
+    border: 1px solid #7a8594;
+    background: #323c4a;
+    padding: 5px;
+    border-radius: 5px;
+    font-family: 'Open Sans', sans-serif;
+}
+
+div.text-input{
+    height: 31px;
+    padding: 5px;
+}
+div.text-input[theme='dark']:hover{
+    background: #161b22;
+}
+div.text-title{
+    float:left;
+    font-size:18px;
+    padding-top:3px;
+}
+div.text-input input{
+    float:right;
+    font-size:15px;
+    width:150px;
+}
+
+
+div.editable-list{
+    margin:5px;
+    background:#161B22;
+    border-radius:10px;
+}
+div.editable-list div.list-item{
+    padding:5px;
+}
+div.list-item:hover{
+    background:#323c4a;
+    border-radius:10px;
+}
+
+
+
+
+div.item-list{
+    background:#161B22;
+    border: 1px solid #3e4148;
+    border-radius:10px;
+    margin:5px;
+    height:400px;
+}
+div.list-headers{
+    background:#323c4a;
+    border-top-right-radius:10px;
+    border-top-left-radius:10px;
+    font-weight:bold;
+    display: flex;
+    flex-direction: row;
+}
+div.list-items{
+    display: flex;
+    flex-direction: row;
+}
+div.input-items{
+    display: flex;
+    flex-direction: row;
+}
+div.list-headers div.h-item{
+    padding:5px;
+    flex-basis: 100%;
+    
+}
+
+div.list-items div.l-item{
+    padding:5px;
+    flex-basis: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    
+}
+div.item-container{
+    overflow-y: auto;
+    height:330px;
+    margin-bottom:5px;
+    height: calc(100% - 70px);
+}
+
+div.input-items input[type="text"]{
+    background-color:#161b22;
+}
+div.input-items input{
+    padding:5px;
+    flex-basis: 100%;
+    margin-left:5px;
+    border-color:#323c4a;
+}
+
+div.input-items input[type="button"]:hover{
+    border-color:white;
+    cursor:pointer;
+}
+div.list-items:hover{
+    background:rgb(50, 60, 74);
+    cursor:pointer;
+}

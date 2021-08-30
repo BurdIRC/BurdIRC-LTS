@@ -1,0 +1,6 @@
+{
+    "serverPort": 1987,
+    "appwindow": false,
+    "browser": "chrome",
+    "verbose": true
+}

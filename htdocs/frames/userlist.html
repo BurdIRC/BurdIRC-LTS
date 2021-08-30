@@ -1,0 +1,253 @@
+<html>
+    <head>
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100;0,300;0,500;1,700&display=swap" rel="stylesheet">
+        <link href="../css/menu.css" rel="stylesheet">
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        
+        <title>Burd Web IRC</title>
+
+        <script>
+        
+            let cid = 0;
+            let cname = "#";
+            
+            let lang = {};
+            let servers = {};
+            const mouse = {x:0,y:0};
+        
+            const menu = {
+                callbacks: {},
+                create: function(e,a){
+                    if(a==undefined) a = {};
+                    if(a.extend==undefined){
+                        $("div.menu").remove();
+                    }else{
+                        $("div.extended-menu").remove();
+                    }
+                    let menuHTML = '<div class="menu">';
+                    for(let i in e){
+                        if(e[i].text == "-"){
+                            menuHTML += '<div class="menu-item menu-seperate">&nbsp;</div>';
+                        }else if(e[i].title != undefined){
+                            menuHTML += '<div class="menu-item menu-title">' + e[i].title + '</div>';
+                        }else{
+                            const mid = randomID();
+                            if(e[i].icon == ""){
+                                menuHTML += '<div class="menu-item" id="' + mid + '">';
+                            }else{
+                                menuHTML += '<div class="menu-item" id="' + mid + '" style="background-image:url(' + e[i].icon + ')">';
+                            }
+                            menuHTML += '<div class="menu-text">' + e[i].text + '</div>';
+                            if(e[i].more) menuHTML += '<div class="menu-more">&nbsp;</div>';
+                            menuHTML += '</div>';
+                            e[i].id = mid;
+                            menu.callbacks[mid] = e[i];
+                        }
+                    }
+                    menuHTML += '</div>';
+                    if(a.extend==undefined){
+                        $("body").append(menuHTML);
+                        $("div.menu").css("top", mouse.y).css("left", mouse.x - 170).hide().fadeIn(100);
+                    }else{
+                        $("body").append(menuHTML.replace("\"menu\"", "\"menu extended-menu\""));
+                        $("div.menu:last").css("top", mouse.y - 10).css("left", mouse.x - 10).hide().fadeIn(100);
+                    }
+                    if($("div.menu:last").position().top + $("div.menu:last").height() > $("#app").height()){
+                        $("div.menu:last").css("top", $("#app").height() - $("div.menu:last").height() - 10 );
+                    }
+                    if($("div.menu:last").position().left + $("div.menu:last").width() > $("#app").width()){
+                       // $("div.menu:last").css("left", $("#app").width() - $("div.menu:last").width() - 10 );
+                    }
+                },
+                call: function(e){
+                    if(menu.callbacks[e].more){
+                        
+                    }else{
+                        $("div.menu").remove();
+                    }
+                    menu.callbacks[e].callback(menu.callbacks[e]);
+                }
+            }
+                    
+        
+        
+            $(function(){
+                window.parent.postMessage({c: "load_complete"}, '*');
+                window.parent.postMessage({c: "get_lang"}, '*');
+                window.parent.postMessage({c: "get_current_channel"}, '*');
+                $("div#close").on("click", function(){
+                    window.parent.postMessage({c: "close_miniframe"}, '*');
+                });
+                $("body").on("mousemove", function(e){
+                    mouse.x = e.pageX;
+                    mouse.y = e.pageY;
+                });
+                
+                $("body").on("click", "div.buttons", function(e){
+                    menu.create([
+                        {
+                            text: lang.networks.remove,
+                            icon: "/images/close.svg",
+                            more: false,
+                            callback: function(mo){
+                                console.log(mo);
+                            }
+                        },
+                        {
+                            text: lang.networks.edit,
+                            icon: "/images/playlist-edit.svg",
+                            more: false,
+                            callback: function(mo){
+                                console.log(mo);
+                            }
+                        }
+                    ]);
+                });
+
+                $("body").on("mousedown", function(e){
+                    if($(e.target).parents('div.menu').length == 0){
+                        $("div.menu").remove();
+                    }
+                });
+                $("body").on("mouseup", "div.menu-item", function(e){
+                    menu.call($(this).attr("id"));
+                });
+                $("body").on("mouseover", ".svgicon", function(e){
+                    $(this).attr("icon", $(this).css("background-image"));
+                    $(this).css("background-image", $(this).attr("icon").replace("D9E0EF", "FFFFFF"));
+                });
+                $("body").on("mouseout", ".svgicon", function(e){
+                    $(this).css("background-image", $(this).attr("icon"));
+                });
+                            
+                
+                
+            });
+           
+            
+            
+            window.addEventListener('message', function(e) {
+                console.log(e);
+                // Get the sent data
+                const data = e.data;
+                switch(data.c){
+                    case "lang":
+                        lang = data.lang;
+                        break;
+                    case "current_channel":
+                        console.log(data);
+                        cid = data.cid;
+                        cname = data.name;
+                        window.parent.postMessage({c: "get_channel_users", name: cname, cid: cid}, '*');
+                        $("h3#maintitle").text(data.name + " userlist");
+                        break;
+                    case "channel_users":
+                        for(let i in data.users){
+                            $("div.users").append('<div class="user">' + removeHTML(data.users[i][0]) + '</div>');
+                        }
+                        break;
+                }
+            });
+            const removeHTML = function(e){
+                if(e==undefined) return "";
+                return e.replace(/\&/g, "&amp;").replace(/\</g, "&lt;");
+            }
+        </script>
+
+        <style>
+
+            
+            body,html{
+                background:white;
+                padding:5px;
+                margin:0;
+                height:calc(100% - 10px);
+                width:calc(100% - 10px);
+                font-family: 'Open Sans', sans-serif;
+                font-size:20px;
+                image-rendering: -webkit-optimize-contrast;
+            }
+
+            div#close{
+                position: absolute;
+                height: 30px;
+                width: 30px;
+                top: 10px;
+                left: calc(100% - 40px);
+                background:url(/images/close.svg);
+                background-size: 25px;
+                background-position: center center;
+                background-repeat: no-repeat;
+                opacity: 1;
+                cursor: pointer;
+                border-radius: 50%;
+                opacity:0.5;
+            }
+            div#close:hover{
+                opacity:1;
+            }
+            
+            div#content{
+                height: 470px;
+            }
+            input{
+                background: #5d7384;
+                padding: 0;
+                margin: 0;
+                font-weight: 400;
+                color: white;
+                padding: 5px;
+                border: 1px solid #353535;
+                font-family: 'Open Sans', sans-serif;
+                border-radius:5px;
+                cursor:pointer;
+            }
+
+
+
+            input[type='button']:hover{
+                border-color:black;
+            }
+            div.buttons{
+                height: 30px;
+                width: 30px;
+                position: absolute;
+                background: red;
+                top: 10px;
+                left: 320px;
+                background:url(/images/dots-vertical-circle-outline.svg);
+                background-size: 24px;
+                background-position:center center;
+                background-repeat: no-repeat;
+                display:none;
+            }
+            div.buttons:hover{
+                background-size:30px;
+            }
+            div.user{
+                font-size:17px;
+                padding:1px;
+                cursor:pointer;
+            }
+            div.user:hover{
+                background:#d9e3ec;
+            }
+            div.users{
+                height: calc(100%);
+                overflow: auto;
+                
+            }
+        </style>
+    </head>
+    <body>
+        <div id="close">&nbsp;</div>
+        <h3 id="maintitle" style="padding: 0;margin: 0;margin-bottom: 10px;">Userlist</h3>
+        <div id="content">
+            <div class="users">
+            </div>
+        </div>
+    </body>
+</html>

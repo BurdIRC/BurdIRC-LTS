@@ -1,0 +1,24 @@
+{
+  "name": "burdirc",
+  "version": "1.0.0",
+  "description": "IRC client that runs in your browser",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/burdirc"
+  },
+  "keywords": [
+    "IRC",
+    "chat",
+    "communication"
+  ],
+  "author": "Matthew Ryan",
+  "license": "MIT",
+  "dependencies": {
+    "tar-fs": "^2.1.1",
+    "ws": "^8.2.0"
+  }
+}

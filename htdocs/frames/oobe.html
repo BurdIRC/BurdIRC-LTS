@@ -1,0 +1,169 @@
+<html>
+    <head>
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100;0,300;0,500;1,700&display=swap" rel="stylesheet">
+        
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        
+        <title>Burd Web IRC</title>
+
+        <script>
+            $(function(){
+                window.parent.postMessage({c: "load_complete"}, '*');
+                $("div#close").on("click", function(){
+                    window.parent.postMessage({c: "close_iframe"}, '*');
+                });
+                $("input#ok").on("click", function(){
+                    window.parent.postMessage({c: "close_iframe"}, '*');
+                });
+            });
+        </script>
+
+        <style>
+            :root {
+
+              color-scheme: dark;
+
+            }
+
+
+            
+            body,html{
+                padding:0;
+                margin:0;
+                height:100%;
+                width:100%;
+                color:white;
+                font-family: 'Open Sans', sans-serif;
+                font-size:16px;
+                image-rendering: -webkit-optimize-contrast;
+                overflow:hidden;
+  
+            }
+            div#app{
+                background:#0D1117;
+                width:800px;
+                margin:0 auto;
+                height:100%;
+                position:relative;
+            }
+            div#nav{
+                width:200px;
+                background:#161B22;
+                height:100%;
+                border-right:1px solid #3e4148;
+                padding-right:10px;
+                color:#d8d8d8;
+                float:left;
+            }
+            div#close{
+                position:absolute;
+                height:30px;
+                width:30px;
+                top:5px;
+                left:750px;
+                background:#323c4a url('/images/white/close.svg');
+                background-size:25px;
+                background-position:center center;
+                background-repeat:no-repeat;
+                opacity:0.6;
+                cursor:pointer;
+                border-radius:50%;
+                border:2px solid white;
+            }
+            div#close:hover{
+                opacity:1;
+            }
+            h4{
+                font-size:15px;
+                margin:0;
+                padding:0;
+                padding:5px;
+            }
+            div.clear{
+                height:0px;
+                clear:both;
+                
+            }
+            div.ainfo{
+                margin-bottom:5px;
+            }
+            a{
+                color:#8fc6ff;
+            }
+            a:hover{
+                color:white;
+            }
+            
+            div.content{
+                height:510px;
+                background:url('/images/white/birby_mcbirbface.png') no-repeat;
+                background-size:400px;
+                background-position:0px bottom;
+                padding-top:50px;
+                position:relative;
+            }
+            div.text{
+                position: absolute;
+                height: 300px;
+                width: 400px;
+                top: 170px;
+                left: 340px;
+            }
+            div.buttons{
+                position: absolute;
+                height: 40px;
+                width: 400px;
+                top: 502px;
+                left: 340px;
+                text-align:right;
+            }
+            input[type='button'],select{
+                padding:5px;
+                margin:0;
+                border:1px solid #9ea0a2;
+                background:#5865F2;
+                border-radius:5px;
+                font-size:17px;
+                color:white;
+            }
+            input[type='button']:hover,select:hover{
+                cursor:pointer;
+                border-color:white;
+                
+                
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app">
+            <div class="content">
+                <div class="text">
+                    <p>
+                        <b>Welcome to Burd IRC!</b>
+                    </p>
+                    <p>
+                         Good news! If you're reading this, then you're running the latest Burd IRC!
+                    </p>
+                    <p>
+                        If you need help using the client you can find a tutorial at burdirc.haxed.net/docs
+                    </p>
+                    <p>
+                        You can also contact someone for help in #burdirc on Libera.chat
+                    </p>
+                    <p>
+                        Now just select your perferred language below and click Go!
+                    </p>
+                </div>
+                <div class="buttons">
+                    <select>
+                        <option>English</option>
+                    </select>
+                    &nbsp;&nbsp;<input type="button" id="ok" value="GO!">
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

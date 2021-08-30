@@ -1,0 +1,235 @@
+<html>
+    <head>
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100;0,300;0,500;1,700&display=swap" rel="stylesheet">
+        <link href="../css/menu.css" rel="stylesheet">
+        <link href="frame_common.css" rel="stylesheet">
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="frame_common.js"></script>
+        
+        <title>Burd Web IRC</title>
+
+        <script>
+            let servers = {};
+            let channel = "#temp";
+            let settings = {};
+            
+            $(function(){
+                //console.log(hexDecode(getUrlParam("channel")));
+                window.parent.postMessage({c: "get_channel_settings", guid: getUrlParam("sid"), channel: channel}, '*');
+                $("div#close").on("click", function(){
+                    window.parent.postMessage({c: "close_miniframe"}, '*');
+                });
+                
+                $("body").on("click", "div.buttons", function(e){
+                    menu.create([
+                        {
+                            text: lang.networks.remove,
+                            icon: "/images/close.svg",
+                            more: false,
+                            callback: function(mo){
+                                console.log(mo);
+                            }
+                        },
+                        {
+                            text: lang.networks.edit,
+                            icon: "/images/playlist-edit.svg",
+                            more: false,
+                            callback: function(mo){
+                                console.log(mo);
+                            }
+                        }
+                    ]);
+                });
+
+                $("body").on("mousedown", function(e){
+                    if($(e.target).parents('div.menu').length == 0){
+                        $("div.menu").remove();
+                    }
+                });
+                $("body").on("mouseup", "div.menu-item", function(e){
+                    menu.call($(this).attr("id"));
+                });
+                $("body").on("mouseover", ".svgicon", function(e){
+                    $(this).attr("icon", $(this).css("background-image"));
+                    $(this).css("background-image", $(this).attr("icon").replace("D9E0EF", "FFFFFF"));
+                });
+                $("body").on("mouseout", ".svgicon", function(e){
+                    $(this).css("background-image", $(this).attr("icon"));
+                });
+                            
+                
+                
+            });
+           
+            
+            
+            window.addEventListener('message', function(e) {
+                console.log(e);
+                // Get the sent data
+                const data = e.data;
+                switch(data.c){
+                    case "channel_settings":
+                        settings = data.settings;
+                        for(let i in data.settings){
+                            if(data.settings[i] == false){
+                                if($("div#" + i).length > 0){
+                                    $("div#" + i).addClass("off");
+                                }
+                            }
+                        }
+                        break;
+
+                    case "lang":
+                        $("h3#maintitle").text(lang.options_for_channel.replace("%c", channel));
+                        for(let i in lang.channel_options_frame){
+                            $("div#" + i).text(lang.channel_options_frame[i]);
+                        }
+                        break;
+                }
+            });
+
+            const getUrlParam = function(e){
+                const queryString = window.location.search;
+                const parameters = new URLSearchParams(queryString);
+                return parameters.get(e);
+            }
+            
+            const hexEncode = function(e){
+                let hex, i;
+
+                let result = "";
+                for (i=0; i<e.length; i++) {
+                    hex = e.charCodeAt(i).toString(16);
+                    result += ("000"+hex).slice(-4);
+                }
+
+                return result
+            }
+            
+            const hexDecode = function(e){
+                if(e == undefined) return "";
+                let j;
+                let hexes = e.match(/.{1,4}/g) || [];
+                let back = "";
+                for(j = 0; j<hexes.length; j++) {
+                    back += String.fromCharCode(parseInt(hexes[j], 16));
+                }
+
+                return back;
+            }
+            
+            channel = hexDecode(getUrlParam("channel"));
+            
+            switchChange = function(e){
+                if(settings[e.id] != undefined) settings[e.id] = e.state;
+                window.parent.postMessage({c: "set_channel_settings", guid: getUrlParam("sid"), channel: channel, settings: settings}, '*');
+            }
+
+        </script>
+
+        <style>
+
+            
+            body,html{
+                background:white;
+                padding:5px;
+                margin:0;
+                height:calc(100% - 10px);
+                width:calc(100% - 10px);
+                font-family: 'Open Sans', sans-serif;
+                font-size:20px;
+                image-rendering: -webkit-optimize-contrast;
+                color:black;
+            }
+
+            div#close{
+                position: absolute;
+                height: 30px;
+                width: 30px;
+                top: 10px;
+                left: calc(100% - 40px);
+                background:url(/images/close.svg);
+                background-size: 25px;
+                background-position: center center;
+                background-repeat: no-repeat;
+                opacity: 1;
+                cursor: pointer;
+                border-radius: 50%;
+                opacity:0.5;
+            }
+            div#close:hover{
+                opacity:1;
+            }
+            
+            div#content{
+                height: 470px;
+                font-size:17px;
+            }
+            input{
+                background: #5d7384;
+                padding: 0;
+                margin: 0;
+                font-weight: 400;
+                color: white;
+                padding: 5px;
+                border: 1px solid #353535;
+                font-family: 'Open Sans', sans-serif;
+                border-radius:5px;
+                cursor:pointer;
+            }
+
+
+
+            input[type='button']:hover{
+                border-color:black;
+            }
+            div.buttons{
+                height: 30px;
+                width: 30px;
+                position: absolute;
+                background: red;
+                top: 10px;
+                left: 320px;
+                background:url(/images/dots-vertical-circle-outline.svg);
+                background-size: 24px;
+                background-position:center center;
+                background-repeat: no-repeat;
+                display:none;
+            }
+            div.buttons:hover{
+                background-size:30px;
+            }
+            div#maintitle{
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                width: calc(100% - 20px);
+                overflow: hidden;
+                margin: 0;
+                margin-bottom: 10px;
+            }
+            
+            
+            
+            
+
+        </style>
+    </head>
+    <body>
+        <div id="close">&nbsp;</div>
+        <h3 id="maintitle">%title</h3>
+        <div id="content">
+            <div id="show_joins" class="switch">%</div>
+            <div id="show_parts" class="switch">%</div>
+            <div id="show_kicks" class="switch">%</div>
+            <div id="show_modes" class="switch">%</div>
+            <div id="show_nick_changes" class="switch">%</div>
+            <div id="mute_channel" class="switch">%</div>
+            <div id="embed_media" class="switch">%</div>
+            <div id="auto_join" class="switch">%</div>
+            <div id="auto_rejoin" class="switch">%</div>
+        </div>
+    </body>
+</html>

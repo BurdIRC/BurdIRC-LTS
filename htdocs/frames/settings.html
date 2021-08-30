@@ -1,0 +1,463 @@
+<html>
+    <head>
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100;0,300;0,500;1,700&display=swap" rel="stylesheet">
+        
+        <link href="frame_common.css" rel="stylesheet">
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="frame_common.js"></script>
+        
+        <link href="../css/menu.css" rel="stylesheet">
+        
+        <title>Burd Web IRC</title>
+
+        <script>
+
+            let settings = {};
+            $(function(){
+                $("div#close").on("click", function(){
+                    //window.parent.postMessage({c: "close_iframe"}, '*');
+                    window.parent.postMessage({c: "set_settings", settings: settings}, '*');
+                });
+                $("div.tab").on("click", function(e){
+                    $("div.tab").removeClass("selected");
+                    $(this).addClass("selected");
+                    $("div.content").hide();
+                    $("div.content[tag='" + $(this).attr("tag") + "']").show(100);
+                });
+
+                
+                $("div#ignore-list").on("click", "div.l-item", function(e){
+                    menu.create([
+                        {
+                            text: lang.remove,
+                            icon: "/images/close.svg",
+                            more: false,
+                            uid: $(this).parent().attr("index"),
+                            callback: function(mo){
+                                const iServ = $("div#ignore-list div[index='" + mo.uid + "'] div:last").text();
+                                const iItem = $("div#ignore-list div[index='" + mo.uid + "'] div:first").text();
+                                console.log(iServ);
+                                settings.ignoreList.splice(mo.uid, 1);
+                                $("div#ignore-list div.item-container").html("");
+                                for(let i in settings.ignoreList){
+                                    $("div#ignore-list div.item-container").append('<div class="list-items" index="' + i + '"><div class="l-item" style="flex-basis:50%">' + removeHTML(settings.ignoreList[i]) + '</div></div>');
+                                }
+                            }
+                        }
+                    ]);
+                
+                });
+                
+                $("div#usercommands-list").on("click", "div.l-item", function(e){
+                    menu.create([
+                        {
+                            text: lang.remove,
+                            icon: "/images/close.svg",
+                            more: false,
+                            uid: $(this).parent().attr("index"),
+                            callback: function(mo){
+                                settings.userCommands.splice(mo.uid, 1);
+                                $("div#usercommands-list div.item-container").html("");
+                                for(let i in settings.userCommands){
+                                    $("div#usercommands-list div.item-container").append('<div class="list-items" index="' + i + '"><div class="l-item" style="flex-basis:50%">' + removeHTML(settings.userCommands[i][0]) + '</div><div class="l-item">' + removeHTML(settings.userCommands[i][1]) + '</div></div>');
+                                }
+                            }
+                        }
+                    ]);
+                
+                });
+                
+                $("div#highlight-list").on("click", "div.l-item", function(e){
+                    menu.create([
+                        {
+                            text: lang.remove,
+                            icon: "/images/close.svg",
+                            more: false,
+                            uid: $(this).parent().attr("index"),
+                            callback: function(mo){
+                                settings.highlights.splice(mo.uid, 1);
+                                $("div#highlight-list div.item-container").html("");
+                                for(let i in settings.highlights){
+                                    $("div#highlight-list div.item-container").append('<div class="list-items" index="' + i + '"><div class="l-item" style="flex-basis:50%">' + removeHTML(settings.highlights[i]) + '</div></div>');
+                                }
+                            }
+                        }
+                    ]);
+                
+                });
+                
+                
+                $("input#ignore_add").on("click", function(e){
+                    if($("input#ignore_input").val() == "") return;
+                    if($("input#ignore_input").val().indexOf("!") == -1) $("input#ignore_input").val($("input#ignore_input").val() + "!*@*");
+                    settings.ignoreList.push($("input#ignore_input").val());
+                    $("div#ignore-list div.item-container").html("");
+
+                    for(let i in settings.ignoreList){
+                        $("div#ignore-list div.item-container").append('<div class="list-items" index="' + i + '"><div class="l-item" style="flex-basis:50%">' + removeHTML(settings.ignoreList[i]) + '</div></div>');
+                    }
+
+                    $("input#ignore_input").val("");
+                });
+                
+                $("input#highlight_add").on("click", function(e){
+                    if($("input#highlight_input").val() == "") return;
+                    settings.highlights.push($("input#highlight_input").val());
+                    $("div#highlight-list div.item-container").html("");
+                    for(let i in settings.highlights){
+                        $("div#highlight-list div.item-container").append('<div class="list-items" index="' + i + '"><div class="l-item" style="flex-basis:50%">' + removeHTML(settings.highlights[i]) + '</div></div>');
+                    }
+                    $("input#highlight_input").val("");
+                });
+                
+                $("input#usercom_add").on("click", function(e){
+                    if($("input#usercom_val").val() == "") return;
+                    if($("input#usercom_com").val() == "") return;
+                    
+                    settings.userCommands.push([$("input#usercom_com").val().toLowerCase(),$("input#usercom_val").val()]);
+
+                    $("div#usercommands-list div.item-container").html("");
+                    for(let i in settings.userCommands){
+                        $("div#usercommands-list div.item-container").append('<div class="list-items" index="' + i + '"><div class="l-item" style="flex-basis:50%">' + removeHTML(settings.userCommands[i][0]) + '</div><div class="l-item">' + removeHTML(settings.userCommands[i][1]) + '</div></div>');
+                    }
+                    
+                    $("input#usercom_val").val("");
+                    $("input#usercom_com").val("");
+                });
+                
+                
+            });
+            
+            window.addEventListener('message', function(e) {
+                // Get the sent data
+                const data = e.data;
+
+                switch(data.c){
+                    case "settings_set":
+                        window.parent.postMessage({c: "close_iframe"}, '*');
+                        break;
+                
+                    case "settings":
+                        settings = data.settings;
+                        for(let i in settings){
+                            if($("div#" + i + ".switch").length > 0 && settings[i] == false){
+                                $("div#" + i).addClass("off");
+                            }                            
+                        }
+                        for(let i in settings.userCommands){
+                            $("div#usercommands-list div.item-container").append('<div class="list-items" index="' + i + '"><div class="l-item" style="flex-basis:50%">' + removeHTML(settings.userCommands[i][0]) + '</div><div class="l-item">' + removeHTML(settings.userCommands[i][1]) + '</div></div>');
+                        }
+                        for(let i in settings.highlights){
+                            $("div#highlight-list div.item-container").append('<div class="list-items" index="' + i + '"><div class="l-item" style="flex-basis:50%">' + removeHTML(settings.highlights[i]) + '</div></div>');
+                        }
+                        for(let i in settings.ignoreList){
+                            $("div#ignore-list div.item-container").append('<div class="list-items" index="' + i + '"><div class="l-item" style="flex-basis:50%">' + removeHTML(settings.ignoreList[i]) + '</div></div>');
+                        }
+                        break;
+                        
+                    case "lang":
+
+                        break;
+                }
+            });
+            
+            
+            
+            switchChange = function(e){
+                if(settings[e.id] != undefined){
+                    settings[e.id] = e.state;
+                    console.log(e.id + ": " + e.state);
+                }
+            };
+            
+            
+            setTimeout(function(){
+                $("div.tab:first").click();
+                $("#app-version").text(version);
+                //$("div.tab[tag='usercommands']").click();
+            },300);
+            
+            onLanguage = function(){
+                        $("#app_settings").text(lang.app_settings.app_settings);
+                        for(let i in lang.app_settings){
+                            $("[lang='" + i + "']").text(lang.app_settings[i]);
+                        }
+            }
+
+        </script>
+
+        <style>
+            :root {
+              --background-color: #161B22;
+              --nav-background: #0D1117;
+              --border-color: #373a40;
+              --nav-item-selected-bg: #343A3F;
+              --nav-count-bg: #48D39D;
+              --nav-count-color: #000000;
+              --nav-width: 250px;
+              
+              --userlist-width:250px;
+              --userlist-bg: #161B22;
+              
+              --input-background: #161B22;
+              
+              --dark-text: #BBBDC1;
+              --light-text: #ffffff;
+              
+              --icon-off: "BBBDC1";
+
+              color-scheme: dark;
+
+            }
+
+            
+            ::-webkit-scrollbar {
+                height: 12px;
+                width: 12px;
+                background: #0b0e13;
+            }
+
+            ::-webkit-scrollbar-thumb {
+                background: #333e4e;
+                -webkit-border-radius: 1ex;
+                -webkit-box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.75);
+            }
+
+            ::-webkit-scrollbar-corner {
+                background: #000;
+            }
+            
+            body,html{
+                background:var(--background-color);
+                background: linear-gradient(to left, #0D1117 0%,#0D1117 50%,#0D1117 50%,#161B22 50%,#161B22 100%); /* W3C */
+                padding:0;
+                margin:0;
+                height:100%;
+                width:100%;
+                color:white;
+                font-family: 'Open Sans', sans-serif;
+                font-size:20px;
+                image-rendering: -webkit-optimize-contrast;
+                overflow:hidden;
+            }
+            div#app{
+                background:#0D1117;
+                width:800px;
+                margin:0 auto;
+                height:100%;
+                position:relative;
+            }
+            div#nav{
+                width:200px;
+                background:#161B22;
+                height:100%;
+                border-right:1px solid #3e4148;
+                padding-right:10px;
+                color:#d8d8d8;
+                float:left;
+            }
+            div#close{
+                position:absolute;
+                height:30px;
+                width:30px;
+                top:5px;
+                left:750px;
+                background:#323c4a url('/images/white/close.svg');
+                background-size:25px;
+                background-position:center center;
+                background-repeat:no-repeat;
+                opacity:0.6;
+                cursor:pointer;
+                border-radius:50%;
+                border:2px solid white;
+            }
+            div#close:hover{
+                opacity:1;
+            }
+            h4{
+                font-size:15px;
+                margin:0;
+                padding:0;
+                padding:5px;
+            }
+            div.tab{
+                font-size:15px;
+                padding:5px;
+                cursor:pointer;
+                border-radius: 7px;
+                margin-top: 2px;
+            }
+            div.selected,div.tab:hover{
+                background:#323c4a;
+                color:white;
+            }
+            div.content{
+                float:left;
+                padding: 5px;
+                width: 520px;
+                height: calc(100% - 10px);
+                overflow-y: auto;
+                display:none;
+            }
+            div.content h3{
+                padding:0;
+                margin:0;
+                padding:5px;
+                padding-top:0px;
+            }
+            div.content{
+                font-size:15px;
+            }
+            div.head{
+                float:left;
+                padding-right:5px;
+                width:100px;
+                text-align:right;
+                font-weight:bold;
+            }
+            div.info{
+                float:right;
+                width:200px;
+            }
+            div.clear{
+                height:0px;
+                clear:both;
+                
+            }
+            div.ainfo{
+                margin-bottom:5px;
+            }
+            a{
+                color:#8fc6ff;
+            }
+            a:hover{
+                color:white;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app">
+            <div id="close">&nbsp;</div>
+            <div id="nav">
+                <h4 id="app_settings">%</h4>
+                <div class="tab selected" tag="appearance" lang="appearance">%</div>
+                <div class="tab" tag="privacy" lang="privacy">%</div>
+                <div class="tab" tag="usercommands" lang="user_commands">%</div>
+                <div class="tab" tag="highlights" lang="highlights">%</div>
+                <div class="tab" tag="about" lang="about">%</div>
+            </div>
+            
+
+            <div class="content" tag="appearance">
+                <h2 lang="appearance">%</h2>
+                
+                <!--
+                <div class="text-input" theme="dark">
+                    <div class="text-title" lang="nav_pane_size">%</div>
+                    <input type="number" value="150">
+                </div>
+                
+                <div class="text-input" theme="dark">
+                    <div class="text-title" lang="userlist_pane_size">%</div>
+                    <input type="number" value="150">
+                </div>
+                -->
+                
+                <div id="showTimestamps" theme="dark" lang="show_timestamps" class="switch">%</div>
+                <div id="showUnread" theme="dark" lang="show_unread_counter" class="switch">%</div>
+                <div id="showEmojis" theme="dark" lang="show_graphical_emojis" class="switch">%</div>
+                <div id="textColors" theme="dark" lang="show_text_colors" class="switch">%</div>
+                <div id="showInputNick" theme="dark" lang="show_nick_next_to_input" class="switch">%</div>
+                <div id="showNickColors" theme="dark" lang="assign_colors" class="switch">%</div>
+                <div id="showIdleStatus" theme="dark" lang="display_moon" class="switch">%</div>
+            </div>
+            
+            
+            <div class="content" tag="privacy">
+                <h2 lang="privacy">%</h2>
+                
+                <h4 lang="ignore_list">%</h4>
+                <div class="item-list" id="ignore-list" style="height:360px;">
+                    <div class="list-headers">
+                        <div class="h-item" style="flex-basis:200%" lang="mask">%</div>
+                    </div>
+                    <div class="item-container">
+
+                    </div>
+                    <div class="input-items">
+                        <input type="text" id="ignore_input" theme="dark" placeholder="value">
+                        <input type="button" id="ignore_add" theme="dark" value="Add" style="flex-basis: 20%;">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content" tag="usercommands">
+                <h2 lang="user_commands">%</h2>
+                
+                <div class="item-list" id="usercommands-list">
+                    <div class="list-headers">
+                        <div class="h-item" style="flex-basis:50%" lang="command">%</div>
+                        <div class="h-item" lang="value">%</div>
+                    </div>
+                    <div class="item-container">
+
+                    </div>
+                    <div class="input-items">
+                        <input type="text" theme="dark" id="usercom_com" placeholder="command">
+                        <input type="text" theme="dark" id="usercom_val" placeholder="value">
+                        <input type="button" theme="dark" id="usercom_add" value="Add" style="flex-basis: 20%;">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content" tag="highlights">
+                <h2 lang="highlights">%</h2>
+                
+                <div class="item-list" id="highlight-list">
+                    <div class="list-headers">
+                        <div class="h-item" lang="value">%</div>
+                    </div>
+                    <div class="item-container">
+
+                    </div>
+                    <div class="input-items">
+                        <input type="text" id="highlight_input" theme="dark" placeholder="value">
+                        <input type="button" id="highlight_add" theme="dark" value="Add" style="flex-basis: 20%;">
+                    </div>
+                </div>
+                <div style="padding-left:10px;">%n = current nick</div>
+            </div>
+            
+            <div class="content" tag="about">
+                <h2 lang="about">%</h2>
+                
+                <div style="text-align:center">
+                    <h4 id="app-version" style="margin-bottom:5px;">Burd IRC 0.0.0 Beta</h4>
+                    <img src="/images/white/code.png" style="width: 250px;">
+                </div>
+                <div style="width:305px;margin:0 auto;">
+                    <div class="ainfo">
+                        <div class="head">Created by:</div>
+                        <div class="info">Libera/duckgoose</div>
+                        <div class="clear">&nbsp;</div>
+                    </div> 
+                    <div class="ainfo">
+                        <div class="head">Github:</div>
+                        <div class="info"><a href="https://github.com/burdirc" target="_blank">https://github.com/burdirc</a></div>
+                        <div class="clear">&nbsp;</div>
+                    </div>
+                    <div class="ainfo">
+                        <div class="head">License:</div>
+                        <div class="info">MIT License</div>
+                        <div class="clear">&nbsp;</div>
+                    </div>
+                </div>
+                
+            </div>
+            
+        </div>
+    </body>
+</html>
