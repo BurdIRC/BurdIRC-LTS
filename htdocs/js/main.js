@@ -862,7 +862,7 @@ if(localStorage["servers"] != undefined){
     );
 }
 
-if(servers[0].length != undefined) servers.splice(0, 1);
+if(servers[0] && servers[0].length != undefined) servers.splice(0, 1);
 
 
 window.addEventListener('beforeunload', function (e) {
