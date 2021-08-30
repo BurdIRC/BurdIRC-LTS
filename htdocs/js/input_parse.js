@@ -414,7 +414,8 @@ const parseInput = (input, cID, type, channel)=>{
             default:
                 //addInfo(lang.invalid_command.replace("%c", command.toUpperCase()), "*");
                 //net.raiseEvent("message", {sender: net, cID: id, type: typ, name: chan});
-                net.sendData(input.substr(1));
+                
+                if(!userCommands(input, cID, type, channel)) net.sendData(input.substr(1));
                 break;
         }
     }else{
