@@ -839,7 +839,7 @@ if(localStorage["servers"] != undefined){
     }
     log("Server data was loaded");
 }else{
-    servers.push([
+    servers.push(
       {
         "guid": "defaultaddedserver",
         "server": "irc.libera.chat",
@@ -859,7 +859,7 @@ if(localStorage["servers"] != undefined){
         "ignoreList": [],
         "highlights": []
       }
-    ]);
+    );
 }
 
 
