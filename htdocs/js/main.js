@@ -862,6 +862,8 @@ if(localStorage["servers"] != undefined){
     );
 }
 
+if(servers[0].length != undefined) servers.splice(0, 1);
+
 
 window.addEventListener('beforeunload', function (e) {
     localStorage.setItem("settings", JSON.stringify(settings));
