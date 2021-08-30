@@ -61,7 +61,6 @@ const settings = {
     ],
     
     "ignoreList": [
-        "exmaple!example@example.com"
     ]
 };
 
