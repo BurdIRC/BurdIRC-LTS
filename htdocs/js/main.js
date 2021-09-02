@@ -808,6 +808,8 @@ const applySettings = function(){
         $("style#no_date_style").remove();
         $("head").append('<style id="no_date_style">div.messagedate{display:none;};</style>');
     }
+    
+    $("div.selected-item").click();
 }
 
 const currentChannel = function(){
@@ -870,3 +872,15 @@ window.addEventListener('beforeunload', function (e) {
     localStorage.setItem("servers", JSON.stringify(servers));
     cs.ws.send('[":0 CLOSED"]');
 });
+
+const hideNav = function(){
+    $(":root").css("--nav-width", "1px");
+    $("div#nav-pane").hide();
+}
+
+const showNav = function(){
+    $(":root").css("--nav-width", "240px");
+    $("div#nav-pane").show();
+}
+
+let showNavPane = true;

@@ -16,7 +16,7 @@ class IRC{
         this.pollState = 0;
 
         this.whoTimer = setInterval(function(){
-            if(settings.whoPolling){
+            if(settings.showIdleStatus){
                 if(self.connected && self.pollState == 0 && self.whoPollChannels.length > 0){
                     self.sendData("WHO " + self.whoPollChannels[0]);
                     self.pollState = 1;

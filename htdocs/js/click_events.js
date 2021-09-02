@@ -1,4 +1,5 @@
 const channelMenu = function(e){
+    const net = getNetwork(e.attr('cid'));
     const type = e.attr('type');
     if(type == "channel"){
         menu.create([
@@ -47,6 +48,22 @@ const channelMenu = function(e){
                 more: false,
                 callback: function(mo){
                     //GUI.removeChannel(e.attr('cid'), hexDecode(e.attr('name')));
+                    const iu = hexDecode(e.attr('name')) + "!*@*";
+                    if(ignoreList.add(iu)){
+                        //added
+                        net.addChannelMessage(GUI.current.type, GUI.current.name, {
+                            type: "info",
+                            message: lang.ignored.replace("%n", iu)
+                        });
+                    }else{
+                        //already added
+                        ignoreList.remove(iu);
+                        net.addChannelMessage(GUI.current.type, GUI.current.name, {
+                            type: "info",
+                            message: lang.unignored.replace("%n", iu)
+                        });
+                    }
+                    
                 }
             }
         ]);
@@ -67,10 +84,32 @@ const channelMenu = function(e){
 
 $(()=>{
     
+    $("div#menubar").on("mouseover", function(e) {
+        if(!showNavPane) showNav();
+        
+    });
+    $("div#chan").on("mouseover", function(e) {
+        if(!showNavPane) hideNav();
+    });
     $("div#app-settings").on("click", function(e) {
         showIframe("settings.html");
         
     });
+    
+    $("div#nav-collapse").on("click", function(e) {
+        if($("div#nav-collapse").hasClass("ison")){
+            showNavPane = true;
+            showNav();
+            $("div#nav-collapse").removeClass("ison");
+            $("div#nav-collapse").css("background-image", "url(images/white/arrow-collapse-left.svg)");
+        }else{
+            showNavPane = false;
+            hideNav();
+            $("div#nav-collapse").addClass("ison");
+            $("div#nav-collapse").css("background-image", "url(images/white/arrow-expand-right.svg)");
+        }
+    });
+    
     $("div#add-network").on("click", function(e) {
         showMiniFrame("networks.html");
     });
@@ -203,7 +242,21 @@ const userMenu = function(cID,usr){
             more: false,
             nick: usr,
             callback: function(mo){
-                console.log(mo);
+                const iu = usr + "!*@*";
+                if(ignoreList.add(iu)){
+                    //added
+                    net.addChannelMessage(GUI.current.type, GUI.current.name, {
+                        type: "info",
+                        message: lang.ignored.replace("%n", iu)
+                    });
+                }else{
+                    //already added
+                    ignoreList.remove(iu);
+                    net.addChannelMessage(GUI.current.type, GUI.current.name, {
+                        type: "info",
+                        message: lang.unignored.replace("%n", iu)
+                    });
+                }
             }
         },
         

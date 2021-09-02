@@ -45,7 +45,7 @@ const GUI = {
                     if(e.cID == GUI.current.cID && e.name.toLowerCase() == GUI.current.name.toLowerCase()) return;
                     let read = parseInt($("div[name='" + hexEncode(e.name.toLowerCase()) + "'][cid='" + e.cID + "'] div.item-count").text());
                     if(read == 99) return;
-                    read++;
+                    if(settings.showUnread) read++;
                     
                     if(e.message.highlight) $("div[name='" + hexEncode(e.name.toLowerCase()) + "'][cid='" + e.cID + "']").addClass("bell");
                     
@@ -102,6 +102,7 @@ const GUI = {
     },
     
     updateChannelMessages: (cID, type, name)=>{
+        /*
         clearTimeout(messageUpdateTimer);
         if(messageCounter > 4){
             GUI.updateChannelMessagesX(cID, type, name);
@@ -111,6 +112,8 @@ const GUI = {
             },100);
         }
         messageCounter++;
+        */
+        GUI.updateChannelMessagesX(cID, type, name);
     },
     
     updateChannelMessagesX: (cID, type, name)=>{
@@ -358,7 +361,8 @@ const GUI = {
     },
     
     removePM: (cID, name)=>{
-
+        console.log(cID);
+        console.log(name);
         const navItem = $("div[name='" + hexEncode(name.toLowerCase()) + "'][cid='" + cID + "']");
         if(navItem.length > 0){
             if(navItem.hasClass("selected-item")){
@@ -372,6 +376,8 @@ const GUI = {
                     $("div[type='console']:first").click();
                     navItem.remove();
                 }
+            }else{
+                navItem.remove();
             }
         }
     },

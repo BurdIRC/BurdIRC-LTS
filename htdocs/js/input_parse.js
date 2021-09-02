@@ -197,9 +197,9 @@ const parseInput = (input, cID, type, channel)=>{
                 }else{
                     if(bits[1].indexOf("!") == -1 && bits[1].indexOf("@") == -1) bits[1] = bits[1] + "!*@*";
                     if(ignoreList.add(bits[1])){
-                        addInfo(bits[1] + " added to ignore list", "*");
+                        addInfo(lang.ignored.replace("%n", bits[1]), "*");
                     }else{
-                        addInfo(bits[1] + " is already ignored", "*");
+                        addInfo(lang.isignored.replace("%n", bits[1]), "*");
                     }
                 }
                 break;
@@ -404,9 +404,9 @@ const parseInput = (input, cID, type, channel)=>{
 
                 if(bits[1].indexOf("!") == -1 && bits[1].indexOf("@") == -1) bits[1] = bits[1] + "!*@*";
                 if(ignoreList.remove(bits[1])){
-                    addInfo(bits[1] + " removed from ignore list", "*");
+                    addInfo(lang.unignored.replace("%n", bits[1]), "*");
                 }else{
-                    addInfo(bits[1] + " was not found on ignore list", "*");
+                    addInfo(lang.notignored.replace("%n", bits[1]), "*");
                 }
                 
                 break;
