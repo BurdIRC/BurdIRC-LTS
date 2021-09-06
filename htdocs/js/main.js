@@ -884,3 +884,31 @@ const showNav = function(){
 }
 
 let showNavPane = true;
+
+
+const banners = {
+    callbacks: {},
+    add: function(e){
+        
+        /*
+        { message: "message", buttons: ["OKAY", "CANCEL"], callback: function(){} }
+        */
+        
+        const id = randomID();
+        let html = '<div bid="' + id + '" class="banner"> <div class="content">%message</div> <div class="buttons">%buttons</div> <div class="clear">&nbsp;</div></div>';
+        
+        html = html.replace("%message", removeHTML(e.message));
+        let buttonHtml = "";
+        for(let i in e.buttons){
+            buttonHtml += '<div class="button">' + removeHTML(e.buttons[i]) + '</div>';
+        }
+        
+        html = html.replace("%buttons", buttonHtml);
+        
+        $("div#banners").append(html);
+        banners.callbacks[id] = [e.callback, e];
+        
+        $("div.banner:last").show(100);
+        
+    }
+}

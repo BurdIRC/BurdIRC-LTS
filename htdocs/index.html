@@ -505,6 +505,7 @@
                 height:100%;
                 z-index:50;
                 display:none;
+                position: absolute;
             }
             div#miniframe{
                 height: 100%;
@@ -630,6 +631,36 @@
             div.messageuser{
                 cursor:pointer;
             }
+            
+            div#banners{
+                position:absolute;
+                top:0;
+                z-index:1;
+                width:500px;
+                left:50%;
+                transform: translate(-50%);
+                font-size:15px;
+                color:black;
+            }
+            
+            div.banner{
+                background:white;
+                padding:5px;
+                color:#3844c7;
+                border-top:1px solid #3844c7;
+                display:none;
+            }
+            
+            div.button{
+                float:right;
+                font-weight:700;
+                margin-left:10px;
+                cursor:pointer;
+                
+            }
+            div.button:hover{
+                text-decoration:underline;
+            }
 
         </style>
         <script>
@@ -639,7 +670,8 @@
         </script>
     </head>
     <body>
-        
+        <div id="banners">
+        </div>
         <div id="loader">
             &nbsp;
         </div>

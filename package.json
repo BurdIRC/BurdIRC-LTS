@@ -1,6 +1,6 @@
 {
   "name": "burdirc",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "IRC client that runs in your browser",
   "main": "index.js",
   "scripts": {

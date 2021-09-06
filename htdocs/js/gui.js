@@ -11,6 +11,9 @@ const GUI = {
         temp = temp.replace("_netname_", e.server.address);
         temp = temp.replace(/_cid_/g, e.connectionID);
         $("div#nav-pane").append(temp);
+        
+        
+        
         this.cID = e.connectionID;
         
         const irc = new IRC(e);
@@ -89,6 +92,8 @@ const GUI = {
                 $("div.network[cid='" + e.sender.connectionID + "'] span.netname").text(e.sender.iSupport.NETWORK);
             }
         });
+        
+        $("div.network[cid='" + e.connectionID + "'] div.net-title").click();
         
     },
     
@@ -342,6 +347,7 @@ const GUI = {
     },
     
     removeChannel: (cID, name)=>{
+        const net = getNetwork(cID);
         const navItem = $("div[name='" + hexEncode(name.toLowerCase()) + "'][cid='" + cID + "']");
         if(navItem.length > 0){
             getNetwork(cID).sendData("PART " + name);
@@ -356,6 +362,11 @@ const GUI = {
                     $("div[type='console']:first").click();
                     navItem.remove();
                 }
+            }
+        }
+        for(let i in net.channels){
+            if(net.channels[i].name.toLowerCase() == name.toLowerCase()){
+                net.channels.splice(i, 1);
             }
         }
     },

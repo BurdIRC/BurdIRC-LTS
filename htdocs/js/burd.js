@@ -59,13 +59,10 @@ class IRC{
     }
     
     disconnected(){
-        this.addToAll({
-            type: "error",
-            name: "DISCONNECTED",
-            message: "Connection to the IRC network was lost"
-        });
+        let dmsg = "Conenction to the IRC network was lost.";
         const _self = this;
         if(this.server.reconnect){
+            dmsg += " Reconnecting in 10 seconds.";
             clearTimeout(this.reconnectTimer);
             this.reconnectTimer = setTimeout(()=>{
                 _self.addToAll({
@@ -74,8 +71,13 @@ class IRC{
                     message: "Reconnecting to the server..."
                 });
                 _self.reconnect();
-            },3000);
+            },10000);
         }
+        this.addToAll({
+            type: "error",
+            name: "DISCONNECTED",
+            message: dmsg
+        });
     }
     
     
@@ -545,6 +547,14 @@ class IRC{
             case "PING":
                 cs.sendData(cID, "PONG :" + cData);
                 break;
+                
+            case "AUTHENTICATE":
+                if(cData == "+"){
+                    const chr0 = String.fromCharCode(0);
+                    cs.sendData(cID, "AUTHENTICATE " + btoa(this.userInfo.auth.username + chr0 + this.userInfo.auth.username + chr0 + this.userInfo.auth.password));
+                }
+                break;
+                
             case "CONTROL":
                 if(ubits[1] == "CONNECTED"){
                     this.raiseEvent("connected", {sender: this});
@@ -552,12 +562,21 @@ class IRC{
                         type: "info",
                         message: lang.connected
                     });
+                    
                     if(this.server.password != ""){
                         cs.sendData(cID, "PASS :" + this.server.password);
                     }
+                    
+                    if(this.userInfo.auth.type == "sasl plain"){
+                        log("Sending SASL Plain auth info");
+                        this.caps.push("sasl=PLAIN");
+                    }
+                    
                 }else if(ubits[1] == "ERROR"){
                 }else if(ubits[1] == "CLOSED"){
-                    this.disconnected();
+                    if(ubits.length == 2){
+                        this.disconnected();
+                    }
                 }
                 break;
             
@@ -574,6 +593,7 @@ class IRC{
                 });
                 this.nick = bits[2];
                 this.connected = true;
+                if(this.userInfo.auth.type == "nickserv") cs.sendData(cID, "PRIVMSG NICKSERV :identify " + this.userInfo.auth.username + " " + this.userInfo.auth.password);
 				break;
                 
                 
@@ -625,6 +645,21 @@ class IRC{
                     name: getEnum(bits[1]),
                     message: cData
                 });
+                break;
+                
+            case E.ERR_SASL_AUTH:
+                addInfo({type: "error", name: getEnum(bits[1]), message: cData});
+                cs.sendData(cID, "CAP END");
+                cs.sendData(cID, "QUIT :sasl error");
+                break;
+                
+            case E.RPL_SASL_AUTH:
+                this.addChannelMessage("console", "console", {
+                    type: "rplmessage",
+                    name: getEnum(bits[1]),
+                    message: cData
+                });
+                cs.sendData(cID, "CAP END");
                 break;
                 
             case E.RPL_LUSEROP:
@@ -909,6 +944,25 @@ class IRC{
                     this.partUser("channel", bits[2], user.nick, user.mask, cData);
                 }
                 break;
+                
+            case "INVITE":
+                user = formatUser(bits[0]);
+                banners.add({
+                    message: user.nick + " has invited you to join the channel " + cData,
+                    buttons:["JOIN", "DECLINE"], 
+                    cid: self.connectionID,
+                    channel: cData,
+                    net: self,
+                    
+                callback: function(e,x){
+                    if(e == "JOIN"){
+                        x.net.sendData("JOIN " + x.channel);
+                    }
+                }});
+                break;
+            
+
+            
             case "CAP":
                 const caps = cData.split(" ");
                 if(ubits[3] == "LS"){
@@ -916,9 +970,16 @@ class IRC{
                     for(let i in caps){
                         if(this.caps.includes(caps[i].toUpperCase())) capRequest += " " + caps[i];
                     }
+                    if(this.userInfo.auth.type == "sasl plain") capRequest += " sasl";
                     cs.sendData(cID, "CAP REQ :" + capRequest.substr(1));
                 }else if(ubits[3] == "ACK"){
-                    cs.sendData(cID, "CAP END");
+                    const chr0 = String.fromCharCode(0);
+                    if(this.userInfo.auth.type == "sasl plain"){
+                        cs.sendData(cID, "AUTHENTICATE PLAIN");
+                        
+                    }else{
+                        cs.sendData(cID, "CAP END");
+                    }
                 }else if(ubits[3] == "NEW"){
                     let capRequest = "";
                     for(let i in caps){

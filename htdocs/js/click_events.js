@@ -96,6 +96,13 @@ $(()=>{
         
     });
     
+    $("div#banners").on("click", "div.button", function(e) {
+        const bid = $(this).parent().parent().attr("bid");
+        banners.callbacks[bid][0]($(this).text(), banners.callbacks[bid][1]);
+        delete(banners.callbacks[bid]);
+        $(this).parent().parent().hide(100, function(){ $(this).remove(); });
+    });
+    
     $("div#nav-collapse").on("click", function(e) {
         if($("div#nav-collapse").hasClass("ison")){
             showNavPane = true;
