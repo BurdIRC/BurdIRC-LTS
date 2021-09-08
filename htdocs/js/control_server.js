@@ -28,7 +28,8 @@ class ControlServer{
                 this.sendData(0, "CONTROL START");
                 break;
             case "v":
-                version = e.data.substr(1);
+                version = e.data.split(" ")[0].substr(1);
+                release = e.data.split(" ")[1];
                 break;
             case "s":
                 this.sid = e.data.substr(1);

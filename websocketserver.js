@@ -2,6 +2,7 @@ const WebSocket = require('ws');
 const net = require('net');
 const tls = require('tls');
 const pjson = require('./package.json');
+const settings = require('./config.json');
 
 const controls = [];
 
@@ -55,11 +56,10 @@ const wsServer = {
 	wss: new WebSocket.Server({noServer: true}),
 	handle: (request, socket, head) => {
 		wsServer.wss.handleUpgrade(request, socket, head, function connection(ws) {
-			console.log("New websocket connection");
+			log("New websocket connection");
             doClose = false;
-            let sid = randomID();
-            
-            ws.send("v" + pjson.version);
+            let sid = randomID(); 
+            ws.send("v" + pjson.version + " " + settings.channel);
             
             setTimeout(function(){
                 ws.send("s" + sid);
@@ -73,7 +73,7 @@ const wsServer = {
                             let data = j[i].substr(1);
                             const bits = data.split(" ");
                             const ubits = data.toUpperCase().split(" ");
-                            console.log("Data: " + data);
+                            log("Data: " + data);
                             if(data.match(/^([1-9])$/ig) != null){
                                 ws.send('a[":' + data + '"]');
                                 controls.push({sid: sid, ws: ws, id: parseInt(bits[0]), client: false, cache: [], data: "", cache: [], cert:"", key: "", send: function(e){
@@ -87,7 +87,7 @@ const wsServer = {
                             }else{
                                 if(bits[0] == "0"){
                                     if(bits[1] == "RESTORE"){
-                                        console.log("RESTORE CONNECTION " + bits[2]);
+                                        log("RESTORE CONNECTION " + bits[2]);
                                         if(isControl(bits[2])){
                                             setControl(bits[2],ws);
                                             sid = bits[2];
@@ -104,7 +104,7 @@ const wsServer = {
                                     let control = getControl(sid,bits[0]);
                                     if(control){
                                         if(control.client){
-                                            console.log(">>" + data.substr(2));
+                                            log(">>" + data.substr(2));
                                             control.client.write(data.substr(2) + "\r\n");
                                         }else{
                                             switch(bits[1]){
@@ -137,7 +137,7 @@ const wsServer = {
                                                             }
                                                             control.cache = [];
                                                         });
-                                                        console.log("SSL Connection");
+                                                        log("SSL Connection");
                                                     }else{
                                                         client.connect(host[1], host[0], function() {
                                                             control.ws.send('a[":' + control.id + ' control connected"]');
@@ -161,7 +161,7 @@ const wsServer = {
                                                         }
                                                     });
                                                     client.on('close', function() {
-                                                        console.log('Connection closed');
+                                                        log('Connection closed');
                                                         control.client = false;
                                                         control.send("a" + JSON.stringify([":" + control.id + " control closed"]));
                                                         removeControl(control.sid);
@@ -183,13 +183,13 @@ const wsServer = {
                         }
                     }
                 }catch(err){
-                    console.log(err);
+                    log(err);
                     //ws.close();
                 }
 			});
             
 			ws.on('close', function incoming(message) {
-				console.log('Websocket closed');
+				log('Websocket closed');
                 /*
 				for(let i in controls){
 					if(controls[i].ws == ws){
@@ -217,6 +217,10 @@ const wsServer = {
 	}
 }
 
+
+function log(e){
+    if(settings.verbose) console.log(e);
+}
 
 function ip2hex(ip){
 	let ip4 = ip.split(".");

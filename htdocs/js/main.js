@@ -1,5 +1,5 @@
 let version = "0.0.0"; //set by websocket backend
-let release = "Beta"; //set by websocket backend
+let release = "LTS"; //set by websocket backend
 
 const settings = {
     "fileService": "https://api.haxed.net/0x0.php",
