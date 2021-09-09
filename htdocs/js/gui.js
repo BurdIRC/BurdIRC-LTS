@@ -387,6 +387,8 @@ const GUI = {
                     $("div[type='console']:first").click();
                     navItem.remove();
                 }
+            }else{
+                navItem.remove();
             }
         }
         for(let i in net.channels){
@@ -397,8 +399,6 @@ const GUI = {
     },
     
     removePM: (cID, name)=>{
-        console.log(cID);
-        console.log(name);
         const navItem = $("div[name='" + hexEncode(name.toLowerCase()) + "'][cid='" + cID + "']");
         if(navItem.length > 0){
             if(navItem.hasClass("selected-item")){
