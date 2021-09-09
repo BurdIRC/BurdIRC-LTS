@@ -485,7 +485,9 @@ window.addEventListener('message', function(e) {
                                 username: servers[i].authUser,
                                 password: servers[i].authPassword
                             }
-                        }
+                        },
+                        
+                        channelSettings: servers[i].channelSettings
 
                     });
                 }
@@ -809,7 +811,9 @@ const applySettings = function(){
         $("head").append('<style id="no_date_style">div.messagedate{display:none;};</style>');
     }
     
+    
     $("div.selected-item").click();
+    
 }
 
 const currentChannel = function(){

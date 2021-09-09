@@ -357,7 +357,7 @@ const parseInput = (input, cID, type, channel)=>{
             case "TOPIC":
                 if(checkArgs(["string"])) return;
                 net.sendData("TOPIC " + GUI.current.name + " :" + _input);
-                addInfoOut("TOPIC " + bits[1], "*");
+                addInfoOut("TOPIC " + _input, "*");
                 break;
                 
             case "UNBAN":

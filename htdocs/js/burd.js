@@ -25,6 +25,8 @@ class IRC{
             }
         },5000);
         
+        this.channelSettings = e.channelSettings;
+        
         this.guid = e.guid;
         
         this.reconnecting = false;
@@ -594,7 +596,18 @@ class IRC{
                 this.nick = bits[2];
                 this.connected = true;
                 if(this.userInfo.auth.type == "nickserv") cs.sendData(cID, "PRIVMSG NICKSERV :identify " + this.userInfo.auth.username + " " + this.userInfo.auth.password);
-				break;
+				
+                setTimeout(function(){
+                    const joinChannels = [];
+                    for(let i in self.channelSettings){
+                        if(self.channelSettings[i].auto_join == true){
+                            joinChannels.push(i);
+                        }
+                    }
+                    if(joinChannels.length > 0) cs.sendData(cID, "JOIN " + joinChannels.join(","));
+                },3000);
+                
+                break;
                 
                 
             case E.RPL_MYINFO:
@@ -831,7 +844,8 @@ class IRC{
                 //a[":1 :duckgoose!~matt@user/duckgoose NOTICE duckgoose :lol"]
                 user = formatUser(bits[0]);
                 if(ignoreList.test(user.mask)) return;
-                addInfo({type: "notice", nick: user.nick, to: bits[2], message: cData});
+                addInfo({type: "notice", nick: user.nick, to: bits[2], message: cData.replace(/\x01/g, "")});
+                playSound(settings.sounds.notice);
                 break; 
             
             case "QUIT":
@@ -866,6 +880,7 @@ class IRC{
                 
                 if(ignoreList.test(user.mask)) return;
                 
+                
                 if(isChannel(bits[2])){
                     if(cData.length > 7 && cData.substr(0,7).toUpperCase() == String.fromCharCode(1) + "ACTION"){
                         const aMsg = cData.substr(8).replace(/\x01/g, "");
@@ -876,6 +891,9 @@ class IRC{
                             message: aMsg,
                             highlight: highlight
                         });
+                    }else if(cData.length > 2 && cData.substr(0,1) == String.fromCharCode(1)){
+                        /* ctcp other than ACTION is handled here */
+                        parseCTCP();
                     }else{
                         this.addChannelMessage("channel", bits[2], {
                             type: "usermessage",
@@ -898,6 +916,9 @@ class IRC{
                             message: aMsg,
                             highlight: highlight
                         });
+                    }else if(cData.length > 2 && cData.substr(0,1) == String.fromCharCode(1)){
+                        /* ctcp other than ACTION is handled here */
+                        parseCTCP();
                     }else{
                         console.log("pm added");
                         this.addChannelMessage("pm", user.nick, {
@@ -960,6 +981,20 @@ class IRC{
                     }
                 }});
                 break;
+                
+                
+            case "TOPIC":
+                user = formatUser(bits[0]);
+                channel = this.getChannel("channel", bits[2]);
+                if(channel){
+                    channel.topic.text = cData;
+                    channel.topic.user = user.nick;
+                    channel.topic.date = parseInt((Date.now() / 1000));
+                    this.raiseEvent("topicChange", {user: user.nick, date: parseInt((Date.now() / 1000)), topic: cData, cID: self.connectionID, channel: bits[2]});
+                    this.addChannelMessage("channel", bits[2], {type: "info", message: user.nick + " has changed the topic to \"" + cData + "\""});
+                }
+                
+                break;
             
 
             
@@ -992,6 +1027,37 @@ class IRC{
         }
         //end of data parse
         
+        function parseCTCP(){
+            user = formatUser(bits[0]);
+            const ctcpParts = cData.replace(/\x01/g, "").split(" ");
+            addInfo({type: "ctcp", user: user.nick, message: ctcpParts[0].toUpperCase()});
+            switch(ctcpParts[0].toUpperCase()){
+                case "VERSION":
+                    cs.sendData(cID, "NOTICE " + user.nick + " :\x01VERSION BurdIRC " + version + " http://burdirc.haxed.net\x01");
+                    //cs.sendData(cID, "AUTHENTICATE PLAIN");
+                    break;
+                    
+                case "PING":
+                    if(ctcpParts.length > 1){
+                        cs.sendData(cID, "NOTICE " + user.nick + " :\x01PING " + ctcpParts[1] + "\x01");
+                    }
+                    break; 
+                    
+                case "TIME":
+
+                        cs.sendData(cID, "NOTICE " + user.nick + " :\x01TIME " + (new Date().toLocaleString()) + "\x01");
+                    
+                    
+                    break;
+                    
+                case "SOURCE":
+             
+                        cs.sendData(cID, "NOTICE " + user.nick + " :\x01SOURCE https://github.com/BurdIRC/Burd-IRC-LTS\x01");
+                    
+                    break;
+
+            }
+        }
 
         
     }

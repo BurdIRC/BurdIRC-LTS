@@ -1,6 +1,7 @@
 
 let messageUpdateTimer = 0;
 let messageCounter = 0;
+let channelShowTimer = 0;
 
 const GUI = {
 
@@ -17,6 +18,15 @@ const GUI = {
         this.cID = e.connectionID;
         
         const irc = new IRC(e);
+        
+        irc.on("topicChange", (e)=>{
+            console.log(e);
+            if(e.cID == GUI.current.cID && e.channel.toLowerCase() == GUI.current.name.toLowerCase()){
+                setTimeout(()=>{
+                    $("div.nav-item.selected-item").click();
+                },100);
+            }
+        });
         
         irc.on("created", (e)=>{
             irc.connect();
@@ -84,6 +94,10 @@ const GUI = {
                 temp = temp.replace(/_name_/g, e.name);
                 temp = temp.replace(/_ename_/g, hexEncode(e.name.toLowerCase()));
                 $("div.network[cid='" + e.sender.connectionID + "'] div.channels").append(temp);
+                clearTimeout(channelShowTimer);
+                channelShowTimer = setTimeout(()=>{
+                    $("div[type='channel'][cid='" + e.sender.connectionID + "'][name='" + hexEncode(e.name.toLowerCase()) + "']").click();
+                },500);
             }
         });
         
@@ -107,18 +121,18 @@ const GUI = {
     },
     
     updateChannelMessages: (cID, type, name)=>{
-        /*
+        
         clearTimeout(messageUpdateTimer);
         if(messageCounter > 4){
             GUI.updateChannelMessagesX(cID, type, name);
         }else{
-            setTimeout(()=>{
+            messageUpdateTimer = setTimeout(()=>{
                 GUI.updateChannelMessagesX(cID, type, name);
             },100);
         }
         messageCounter++;
-        */
-        GUI.updateChannelMessagesX(cID, type, name);
+        
+        //GUI.updateChannelMessagesX(cID, type, name);
     },
     
     updateChannelMessagesX: (cID, type, name)=>{
@@ -230,6 +244,17 @@ const GUI = {
                             
                             marr.push(htm);
                             break;
+                            
+                        case "ctcp":
+                            htm = $("template#general-info").html();
+                            d = new Date(cmsg.date);
+                            htm = htm.replace("_message_", "<b>" + removeHTML(cmsg.user) + "</b> has requested CTCP <b>" + removeHTML(cmsg.message) + "</b>");
+                            htm = htm.replace("_date_", removeHTML(d.toLocaleTimeString()));
+                            htm = htm.replace("_classes_", "");
+                            
+                            marr.push(htm);
+                            break;
+                            
                         case "error":
                             htm = $("template#chat-msg").html();
                             d = new Date(cmsg.date);
@@ -308,7 +333,7 @@ const GUI = {
                         for(let j in net.channels[i].users){
                             const nuser = net.getServerUser(net.channels[i].users[j][0]);
                             htm = html;
-                            if(nuser.length > 0) htm = htm.replace("_state_", (nuser[2] == "" ? "" : "away"));
+                            if(nuser.length > 0 && settings.showIdleStatus) htm = htm.replace("_state_", (nuser[2] == "" ? "" : "away"));
                             htm = htm.replace("_name_", removeHTML(net.channels[i].users[j][0]));
                             htm = htm.replace("_ename_", hexEncode(net.channels[i].users[j][0]));
                             htm = htm.replace("_flags_", removeHTML(net.channels[i].users[j][1]));

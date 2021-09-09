@@ -36,17 +36,15 @@ function createHttpServer(){
 console.log("Checking for updates...");
 
 function getUpdate(url,type){
-    if(fs.existsSync("index.js.old")) fs.unlinkSync("index.js.old");
     const file = fs.createWriteStream("update.tar");
     const request = https.get(url, function(response) {
         response.pipe(file);
         console.log("Extracting update file...");
         setTimeout(function(){
-            if(type == 2) fs.renameSync("index.js", "index.js.old");
             fs.createReadStream('update.tar').pipe(tar.extract('./'));
             console.log("Update complete!");
             if(type == 2){
-                console.log("The backend has been updated. You'll need to relaunch the program");
+                console.log("The app has been updated. You'll need to relaunch the it");
             }else{
                 createHttpServer();
                 startGUI();
@@ -59,7 +57,7 @@ function getUpdate(url,type){
     });
 }
 
-const upd = https.get('https://burdirc.haxed.net/updates.json', (resp) => {
+const upd = https.get('https://burdirc.haxed.net/updates.json?channel=' + settings.channel, (resp) => {
 	let data = '';
 
 	resp.on('data', (chunk) => {
