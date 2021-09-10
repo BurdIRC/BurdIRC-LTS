@@ -407,7 +407,7 @@ class IRC{
         
         let channel = false;
         let user = false;
-        
+        let chanSettings = false;
         
         
         const addInfo = function(e){
@@ -736,6 +736,22 @@ class IRC{
                 }
                 break;
             
+            case E.RPL_QLIST:
+                addInfo({type: "quietlist", channel: bits[3], ban: bits[5], banner: bits[6], time: bits[7]});
+                break;
+                
+            case E.RPL_ENDOFQLIST:
+                addInfo({type: "info", message: bits[3] + " End of Quiet list"});
+                break;
+                
+            case E.RPL_BANLIST:
+                addInfo({type: "banlist", channel: bits[3], ban: bits[4], banner: bits[5], time: bits[6]});
+                break;
+
+            case E.RPL_ENDOFBANLIST:
+                addInfo({type: "info", message: bits[3] + " End of Banlist"});
+                break;
+            
             
             case E.RPL_WHOREPLY:
                 //this.pollState = 0;
@@ -832,6 +848,9 @@ class IRC{
                 channel = this.getChannel("channel", bits[3]);
                 channel.topic.user = bits[4];
                 channel.topic.date = bits[5];
+                const band = new Date(parseInt(bits[5] + "000"));
+                user = formatUser(bits[4]);
+                this.addChannelMessage("channel", bits[3], {type: "info", message: "Topic set by " + user.nick + " on " + band.toDateString()});
                 break;
                 
                 
@@ -861,8 +880,15 @@ class IRC{
                 
             case "KICK":
                 user = formatUser(bits[0]);
-                
+                chanSettings = getChannelSettings(this.guid, bits[2]);
                 this.kickUser(user.nick, bits[2], bits[3], cData);
+                if(chanSettings.auto_rejoin){
+                    if(bits[3].toLowerCase() == this.nick.toLowerCase()){
+                        setTimeout(function(){
+                            cs.sendData(cID, "JOIN " + bits[2]);
+                        },2000);
+                    }
+                }
                 break;
                 
             case "PRIVMSG":
@@ -959,7 +985,7 @@ class IRC{
                 break;
             case "PART":
                 user = formatUser(bits[0]);
-                if(user.nick.toLowerCase() == this.userInfo.nick.toLowerCase()){
+                if(user.nick.toLowerCase() == this.nick.toLowerCase()){
                     
                 }else{
                     this.partUser("channel", bits[2], user.nick, user.mask, cData);

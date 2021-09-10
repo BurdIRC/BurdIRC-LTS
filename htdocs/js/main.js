@@ -459,39 +459,7 @@ window.addEventListener('message', function(e) {
             e.source.postMessage({c: "servers", servers: servers}, '*');
             break;
         case "connect":
-            for(let i in servers){
-                if(servers[i].guid == data.id){
-                    const cID = (networks.length == 0 ? "1" : networks.length);
-
-                    GUI.createNetwork({
-                        connectionID: cID,
-                        guid: servers[i].guid,
-
-                        server: {
-                            address: servers[i].server,
-                            port: servers[i].port,
-                            TLS: servers[i].TLS,
-                            cert: servers[i].authPEM,
-                            password: servers[i].serverPassword,
-                            reconnect: servers[i].autoReconnect
-                        },
-
-                        userInfo: {
-                            nick: servers[i].nick.replace("*", randomID().substr(1,5)),
-                            ident: servers[i].ident,
-                            name: servers[i].realName,
-                            auth: {
-                                type: servers[i].authType,
-                                username: servers[i].authUser,
-                                password: servers[i].authPassword
-                            }
-                        },
-                        
-                        channelSettings: servers[i].channelSettings
-
-                    });
-                }
-            }
+            connectNetwork(data.id);
             break;
     }
 });
@@ -914,5 +882,42 @@ const banners = {
         
         $("div.banner:last").show(100);
         
+    }
+}
+
+
+const connectNetwork = function(sid){
+    for(let i in servers){
+        if(servers[i].guid == sid){
+            const cID = (networks.length == 0 ? "1" : networks.length);
+
+            GUI.createNetwork({
+                connectionID: cID,
+                guid: servers[i].guid,
+
+                server: {
+                    address: servers[i].server,
+                    port: servers[i].port,
+                    TLS: servers[i].TLS,
+                    cert: servers[i].authPEM,
+                    password: servers[i].serverPassword,
+                    reconnect: servers[i].autoReconnect
+                },
+
+                userInfo: {
+                    nick: servers[i].nick.replace("*", randomID().substr(1,5)),
+                    ident: servers[i].ident,
+                    name: servers[i].realName,
+                    auth: {
+                        type: servers[i].authType,
+                        username: servers[i].authUser,
+                        password: servers[i].authPassword
+                    }
+                },
+                
+                channelSettings: servers[i].channelSettings
+
+            });
+        }
     }
 }

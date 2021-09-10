@@ -116,8 +116,9 @@
                         
                         
                         if(newNetwork.TLS) $("div#tls").addClass("checked");
-                        if(newNetwork.Startup) $("div#startup").addClass("checked");
+                        if(newNetwork.onStartup) $("div#startup").addClass("checked");
                         if(newNetwork.autoReconnect) $("div#autoreconnect").addClass("checked");
+                        
                         break;
                 
                     case "lang":

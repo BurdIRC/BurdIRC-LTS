@@ -25,8 +25,8 @@ function isControl(sid){
 
 function removeControl(sid){
 	for(let i in controls){
-        if(controls[i].client) controls[i].client.write("QUIT :Burd IRC burdirc.haxed.net\r\n");
-        if(controls[i].client) controls[i].client.destroy();
+        if(controls[i].client && controls[i].sid == sid) controls[i].client.write("QUIT :BurdIRC burdirc.haxed.net\r\n");
+        if(controls[i].client && controls[i].sid == sid) controls[i].client.destroy();
 	}
 	return false;
 }
@@ -164,11 +164,11 @@ const wsServer = {
                                                         log('Connection closed');
                                                         control.client = false;
                                                         control.send("a" + JSON.stringify([":" + control.id + " control closed"]));
-                                                        removeControl(control.sid);
+                                                        //removeControl(control.sid);
                                                     });
                                                     client.on('error', function(err) {
                                                         control.send("a" + JSON.stringify([":" + control.id + " control closed " + err.code]));
-                                                        removeControl(control.sid);
+                                                        //removeControl(control.sid);
                                                     });
                                                     break;
                                                 case "ENCODING":

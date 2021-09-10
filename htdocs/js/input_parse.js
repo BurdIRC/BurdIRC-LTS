@@ -261,13 +261,15 @@ const parseInput = (input, cID, type, channel)=>{
                 if(bits.length == 1){
                     net.sendData("MODE " + GUI.current.name);
                 }else{
-                    if(bits[1][0] == "+" || bits[1][0] == "-"){
-                        net.sendData("MODE " + GUI.current.name + " " + _input);
-                    }else{
+                    if(bits[1][0] == "#"){
                         net.sendData("MODE " + _input);
+                        addInfoOut("MODE " + _input, "*");
+                    }else{
+                        net.sendData("MODE " + GUI.current.name + " " + _input);
+                        addInfoOut("MODE " + GUI.current.name + " " + _input, "*");
                     }
                 }
-                addInfoOut("MODE " + _input, "*");
+                
                 break;
                 
                 

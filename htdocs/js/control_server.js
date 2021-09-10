@@ -60,6 +60,15 @@ class ControlServer{
             }
         }
         log("Websocket connection created");
+        setTimeout(function(){
+            for(let i in servers){
+                if(servers[i].onStartup){
+                    setTimeout(function(){
+                        connectNetwork(servers[i].guid);
+                    },100 * i);
+                }
+            }
+        },2000);
     }
     
     onClose(e){

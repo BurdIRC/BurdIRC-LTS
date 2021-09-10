@@ -255,6 +255,29 @@ const GUI = {
                             marr.push(htm);
                             break;
                             
+                        case "banlist":
+                            htm = $("template#general-info").html();
+                            d = new Date(cmsg.date);
+                            htm = htm.replace("_date_", removeHTML(d.toLocaleTimeString()));
+                            d = new Date(parseInt(cmsg.time + "000"));
+                            htm = htm.replace("_message_", "<b>" + removeHTML(cmsg.channel) + "</b> ban: <b>" + removeHTML(cmsg.ban) + "</b> set by <b>" + removeHTML(cmsg.banner) + "</b> on <b>" + d.toDateString() + "</b>");
+                            htm = htm.replace("_date_", removeHTML(d.toLocaleTimeString()));
+                            htm = htm.replace("_classes_", "");
+                            
+                            marr.push(htm);
+                            break;
+                            
+                        case "quietlist":
+                            htm = $("template#general-info").html();
+                            d = new Date(cmsg.date);
+                            htm = htm.replace("_date_", removeHTML(d.toLocaleTimeString()));
+                            d = new Date(parseInt(cmsg.time + "000"));
+                            htm = htm.replace("_message_", "<b>" + removeHTML(cmsg.channel) + "</b> quiet: <b>" + removeHTML(cmsg.ban) + "</b> set by <b>" + removeHTML(cmsg.banner) + "</b> on <b>" + d.toDateString() + "</b>");
+                            htm = htm.replace("_classes_", "");
+                            
+                            marr.push(htm);
+                            break;
+                            
                         case "error":
                             htm = $("template#chat-msg").html();
                             d = new Date(cmsg.date);
