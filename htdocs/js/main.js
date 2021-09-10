@@ -424,7 +424,8 @@ window.addEventListener('message', function(e) {
             e.source.postMessage({c: "channel_settings", settings: getChannelSettings(data.guid, data.channel)}, '*');
             break;
         case "set_channel_settings":
-            saveChannelSettings(data.guid, data.channel, data.settings)
+            saveChannelSettings(data.guid, data.channel, data.settings);
+            $("div.nav-item.selected-item").click();
             break;
         case "get_servers":
             e.source.postMessage({c: "servers", servers: servers}, '*');

@@ -151,6 +151,8 @@ const GUI = {
                 for(let j in rv){
                     const cmsg = rv[j];
                     const hNick = "<b>" + removeHTML(cmsg.nick) + "</b>";
+                    const chanSettings = getChannelSettings(net.guid, name);
+                    
                     switch(cmsg.type){
                         case "whois":
                        htm = $("template#whois").html();
@@ -188,22 +190,26 @@ const GUI = {
                             marr.push(htm)
                             break;
                         case "userpart":
-                            htm = $("template#general-info").html();
-                            d = new Date(cmsg.date);
-                            htm = htm.replace("_message_", lang.has_left.replace("%n", hNick).replace("%m", removeHTML(cmsg.message)));
-                            htm = htm.replace("_date_", removeHTML(d.toLocaleTimeString()));
-                            htm = htm.replace("_classes_", "info-out");
-                            
-                            marr.push(htm)
+                            if(chanSettings.show_parts){
+                                htm = $("template#general-info").html();
+                                d = new Date(cmsg.date);
+                                htm = htm.replace("_message_", lang.has_left.replace("%n", hNick).replace("%m", removeHTML(cmsg.message)));
+                                htm = htm.replace("_date_", removeHTML(d.toLocaleTimeString()));
+                                htm = htm.replace("_classes_", "info-out");
+                                marr.push(htm);
+                            }
                             break;
                         case "userjoin":
-                            htm = $("template#general-info").html();
-                            d = new Date(cmsg.date);
-                            htm = htm.replace("_message_", lang.has_joined.replace("%n", hNick));
-                            htm = htm.replace("_date_", removeHTML(d.toLocaleTimeString()));
-                            htm = htm.replace("_classes_", "");
-                            
-                            marr.push(htm)
+                            if(chanSettings.show_joins){
+                                
+                                htm = $("template#general-info").html();
+                                d = new Date(cmsg.date);
+                                htm = htm.replace("_message_", lang.has_joined.replace("%n", hNick));
+                                htm = htm.replace("_date_", removeHTML(d.toLocaleTimeString()));
+                                htm = htm.replace("_classes_", "");
+                                
+                                marr.push(htm);
+                            }
                             break;
                         case "userquit":
                             htm = $("template#general-info").html();
@@ -215,25 +221,33 @@ const GUI = {
                             marr.push(htm);
                             break;
                         case "nickchange":
-                            htm = $("template#general-info").html();
-                            d = new Date(cmsg.date);
-                            htm = htm.replace("_message_", lang.name_change.replace("%o", hNick).replace("%n", "<b>" + removeHTML(cmsg.newNick) + "</b>"));
-                            htm = htm.replace("_date_", removeHTML(d.toLocaleTimeString()));
-                            htm = htm.replace("_classes_", "");
-                            setTimeout(function(){
-                                $("div#my-nick").text(net.nick);
-                            },100);
+                            if(chanSettings.show_nick_changes){
+                                htm = $("template#general-info").html();
+                                d = new Date(cmsg.date);
+                                htm = htm.replace("_message_", lang.name_change.replace("%o", hNick).replace("%n", "<b>" + removeHTML(cmsg.newNick) + "</b>"));
+                                htm = htm.replace("_date_", removeHTML(d.toLocaleTimeString()));
+                                htm = htm.replace("_classes_", "");
+                                marr.push(htm);
+                            }
                             
-                            marr.push(htm);
+                            if(hNick.toLowerCase() == net.nick.toLowerCase()){
+                                setTimeout(function(){
+                                    $("div#my-nick").text(net.nick);
+                                },100);
+                            }
+                            
+                            
                             break;
                         case "userkicked":
-                            htm = $("template#general-info").html();
-                            d = new Date(cmsg.date);
-                            htm = htm.replace("_message_", lang.kicked.replace("%n", "<b>" + removeHTML(cmsg.kicked) + "</b>").replace("%k", "<b>" + removeHTML(cmsg.kicker) + "</b>").replace("%m", "<b>" + removeHTML(cmsg.message) + "</b>"));
-                            htm = htm.replace("_date_", removeHTML(d.toLocaleTimeString()));
-                            htm = htm.replace("_classes_", "");
-                            
-                            marr.push(htm);
+                            if(chanSettings.show_kicks){
+                                htm = $("template#general-info").html();
+                                d = new Date(cmsg.date);
+                                htm = htm.replace("_message_", lang.kicked.replace("%n", "<b>" + removeHTML(cmsg.kicked) + "</b>").replace("%k", "<b>" + removeHTML(cmsg.kicker) + "</b>").replace("%m", "<b>" + removeHTML(cmsg.message) + "</b>"));
+                                htm = htm.replace("_date_", removeHTML(d.toLocaleTimeString()));
+                                htm = htm.replace("_classes_", "");
+                                
+                                marr.push(htm);
+                            }
                             break;
                         case "info":
                             htm = $("template#general-info").html();

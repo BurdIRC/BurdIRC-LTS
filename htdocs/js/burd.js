@@ -874,6 +874,7 @@ class IRC{
                 
             case "NICK":
                 user = formatUser(bits[0]);
+                chanSettings = getChannelSettings(this.guid, bits[2]);
                 
                 this.nickChange(user.nick, cData);
                 break;
@@ -881,6 +882,7 @@ class IRC{
             case "KICK":
                 user = formatUser(bits[0]);
                 chanSettings = getChannelSettings(this.guid, bits[2]);
+                
                 this.kickUser(user.nick, bits[2], bits[3], cData);
                 if(chanSettings.auto_rejoin){
                     if(bits[3].toLowerCase() == this.nick.toLowerCase()){
@@ -983,8 +985,11 @@ class IRC{
                     this.joinUser("channel", bits[2], user.nick, user.mask);
                 }
                 break;
+                
             case "PART":
                 user = formatUser(bits[0]);
+                chanSettings = getChannelSettings(this.guid, bits[2]);
+                
                 if(user.nick.toLowerCase() == this.nick.toLowerCase()){
                     
                 }else{
