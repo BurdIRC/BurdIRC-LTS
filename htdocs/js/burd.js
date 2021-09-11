@@ -706,6 +706,7 @@ class IRC{
             case E.ERR_UMODEUNKNOWNFLAG:
             case E.ERR_USERSDONTMATCH:
             case E.ERR_NICKLOCKED:
+            case E.ERR_NONICKCHANGE:
                 addInfo({type: "error", name: getEnum(bits[1]), message: cData});
                 break;
             
@@ -875,8 +876,8 @@ class IRC{
             case "NICK":
                 user = formatUser(bits[0]);
                 chanSettings = getChannelSettings(this.guid, bits[2]);
-                
                 this.nickChange(user.nick, cData);
+                this.raiseEvent("nickchange", {sender: this});
                 break;
                 
             case "KICK":

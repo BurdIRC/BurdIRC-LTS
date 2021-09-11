@@ -448,9 +448,13 @@ window.addEventListener('message', function(e) {
             break;
         case "edit_servers":
             for(let i in servers){
+                delete(servers[i]);
+            }
+            for(let i in data.servers){
                 servers[i] = data.servers[i];
             }
             break;
+            
         case "remove_server":
             for(let i in servers){
                 if(servers[i].guid == data.id){
@@ -813,36 +817,12 @@ if(localStorage["servers"] != undefined){
         servers.push(serverData[i]);
     }
     log("Server data was loaded");
-}else{
-    servers.push(
-      {
-        "guid": "defaultaddedserver",
-        "server": "irc.libera.chat",
-        "port": "6697",
-        "TLS": true,
-        "serverPassword": "",
-        "nick": "Guest_*",
-        "realName": "BurdIRC",
-        "ident": "BurdIRC",
-        "authType": "none",
-        "authUser": "",
-        "authPassword": "",
-        "authPEM": "",
-        "autoReconnect": true,
-        "onStartup": false,
-        "channelSettings": {},
-        "ignoreList": [],
-        "highlights": []
-      }
-    );
 }
-
-if(servers[0] && servers[0].length != undefined) servers.splice(0, 1);
 
 
 window.addEventListener('beforeunload', function (e) {
     localStorage.setItem("settings", JSON.stringify(settings));
-    localStorage.setItem("servers", JSON.stringify(servers));
+    if(servers.length > 0) localStorage.setItem("servers", JSON.stringify(servers));
     cs.ws.send('[":0 CLOSED"]');
 });
 

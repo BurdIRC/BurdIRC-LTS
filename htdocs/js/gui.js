@@ -73,6 +73,10 @@ const GUI = {
             }
         });
         
+        irc.on("nickchange", (e)=>{
+            $("div.nav-item.selected-item").click();
+        });
+        
         irc.on("quit", (e)=>{
             if($("div#users div.user[nick='" + hexEncode(e.nick.toLowerCase()) + "']").length > 0){
                 $("div#users div.user[nick='" + hexEncode(e.nick.toLowerCase()) + "']").remove();
@@ -144,6 +148,9 @@ const GUI = {
         let d = new Date();
         let lastType = "";
         
+        const imgRegex = /https?\:\/\/(.*)\.(jpg|png|gif)/ig;
+        // /https?\:\/\/(.*){96}\.(jpg|png|gif)/
+        //https://usercontent.irccloud-cdn.com/file/GMERpbGu/1631319406.JPG
         
         for(let i in net.channels){
             if(net.channels[i].type == type && net.channels[i].name.toLowerCase() == name.toLowerCase()){
@@ -165,18 +172,33 @@ const GUI = {
                             break;
                         
                         case "usermessage":
-                            htm = $("template#chat-msg").html();
-                            d = new Date(cmsg.date);
-                            if(onlyEmojis(cmsg.message)) htm = htm.replace("_emojic_", "emojimessage");
-                            if(hasEmojis(cmsg.message)) htm = htm.replace("_emojic_", "hasemoji");
-                            htm = htm.replace("_ename_", hexEncode(cmsg.nick));
-                            htm = htm.replace("_name_", removeHTML(cmsg.nick));
-                            htm = htm.replace("_message_", emojify(linkify(colors.parse(removeHTML(cmsg.message)))));
-                            htm = htm.replace("_date_", removeHTML(d.toLocaleTimeString()));
-                            htm = htm.replace("_color_", strToColor(cmsg.nick));
-                            if(cmsg.highlight) htm = htm.replace("_highlight_", "highlighted");
                             
-                            marr.push(htm)
+                            if(cmsg.message.match(imgRegex) != null && cmsg.message.match(imgRegex)[0] == cmsg.message && chanSettings.embed_media == true && cmsg.message.indexOf("\"") == -1){
+                                let img = cmsg.message.match(imgRegex)[0];
+                                htm = $("template#chat-media").html();
+                                d = new Date(cmsg.date);
+                                htm = htm.replace("_ename_", hexEncode(cmsg.nick));
+                                htm = htm.replace("_name_", removeHTML(cmsg.nick));
+                                htm = htm.replace("_media_", removeHTML(img));
+                                htm = htm.replace("_date_", removeHTML(d.toLocaleTimeString()));
+                                htm = htm.replace("_color_", strToColor(cmsg.nick));
+                                
+                                marr.push(htm);
+                            }else{
+                                htm = $("template#chat-msg").html();
+                                d = new Date(cmsg.date);
+                                if(onlyEmojis(cmsg.message)) htm = htm.replace("_emojic_", "emojimessage");
+                                if(hasEmojis(cmsg.message)) htm = htm.replace("_emojic_", "hasemoji");
+                                htm = htm.replace("_ename_", hexEncode(cmsg.nick));
+                                htm = htm.replace("_name_", removeHTML(cmsg.nick));
+                                htm = htm.replace("_message_", emojify(linkify(colors.parse(removeHTML(cmsg.message)))));
+                                htm = htm.replace("_date_", removeHTML(d.toLocaleTimeString()));
+                                htm = htm.replace("_color_", strToColor(cmsg.nick));
+                                if(cmsg.highlight) htm = htm.replace("_highlight_", "highlighted");
+                                
+                                marr.push(htm);
+                            }
+                            
                             break;
                         case "useraction":
                             htm = $("template#action-message").html();

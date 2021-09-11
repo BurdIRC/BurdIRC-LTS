@@ -85,6 +85,33 @@
                     mouse.y = e.pageY;
                 });
                 
+                $("body").on("click", "div#mainmenu", function(e){
+                    menu.create([
+                        {
+                            text: lang.export_settings,
+                            icon: "/images/database-export-outline.svg",
+                            more: false,
+                            sid: $(this).parent().attr("sid"),
+                            callback: function(mo){
+                                //window.parent.postMessage({c: "remove_server", id: mo.sid}, '*');
+                                let textData = JSON.stringify(servers,null,4);
+                                let blobData = new Blob([textData], {type: "text/plain"});
+                                let url = window.URL.createObjectURL(blobData);
+                                saveFile('servers.json',url); 
+                            }
+                        },
+                        {
+                            text: lang.import_settings,
+                            icon: "/images/database-import-outline.svg",
+                            more: false,
+                            sid: $(this).parent().attr("sid"),
+                            callback: function(mo){
+                                $("#certFile").click();
+                            }
+                        }
+                    ]);
+                });
+                
                 $("body").on("click", "div.buttons", function(e){
                     menu.create([
                         {
@@ -130,7 +157,20 @@
                 $("body").on("mouseout", ".svgicon", function(e){
                     $(this).css("background-image", $(this).attr("icon"));
                 });
-                            
+                   
+
+                $('#certFile').on('change', function () {
+                    const fileReader = new FileReader();
+                    fileReader.onload = function () {
+                        const data = atob(fileReader.result.split(";base64,")[1]);
+                        if(data.substr(0,1) != "[") return alert("Not a valid json file");
+                        servers = JSON.parse(data);
+                        window.parent.postMessage({c: "edit_servers", servers: servers}, '*');
+                        window.location.reload();
+                    };
+                    fileReader.readAsDataURL($('#certFile').prop('files')[0]);
+                });
+                   
                 
                 
             });
@@ -162,6 +202,19 @@
                     return v.toString(16);
                 });
             }
+            
+            const saveFile = function(fileName,urlFile){
+                let a = document.createElement("a");
+                a.style = "display: none";
+                document.body.appendChild(a);
+                a.href = urlFile;
+                a.download = fileName;
+                a.click();
+                window.URL.revokeObjectURL(urlFile);
+                a.remove();
+            }
+
+            
         </script>
 
         <style>
@@ -178,6 +231,26 @@
                 image-rendering: -webkit-optimize-contrast;
             }
 
+            div#mainmenu{
+                position: absolute;
+                height: 30px;
+                width: 30px;
+                top: 10px;
+                left: calc(100% - 70px);
+                background:url(/images/dots-vertical.svg);
+                background-size: 25px;
+                background-position: center center;
+                background-repeat: no-repeat;
+                opacity: 1;
+                cursor: pointer;
+                border-radius: 50%;
+                opacity:0.5;
+            }
+            div#mainmenu:hover{
+                opacity:1;
+            }
+            
+            
             div#close{
                 position: absolute;
                 height: 30px;
@@ -283,10 +356,15 @@
                 margin:0;
                 margin-bottom:10px;
             }
+            #certFile{
+                display:none;
+            }
         </style>
     </head>
     <body>
+        <input type="file" id="certFile" accept=".json">
         <div id="close">&nbsp;</div>
+        <div id="mainmenu">&nbsp;</div>
         <h3 id="maintitle">$networks</h3>
         <div id="nets">
             <!--
