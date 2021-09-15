@@ -403,7 +403,14 @@ class IRC{
         /* cData is all data after ":", if ":" doesn't exist then it will be the last bit of data */
         const cData = (packet.indexOf(" :") > -1) ? packet.substr(packet.indexOf(" :")+2) : bits[bits.length - 1];
         
-        
+        if(capture.cid == cID){
+            if(capture.window){
+                if(packet.match(capture.regex)){
+                    capture.window.postMessage({c: "packet", data: packet}, '*');
+                    return;
+                }
+            }
+        }
         
         let channel = false;
         let user = false;

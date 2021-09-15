@@ -1,6 +1,14 @@
 let version = "0.0.0"; //set by websocket backend
 let release = "LTS"; //set by websocket backend
 
+//capture is set by iframes to capture irc packets
+const capture = {
+    window: false,
+    regex: /nothing/,
+    cid: -1
+};
+
+
 const settings = {
     "fileService": "https://api.haxed.net/0x0.php",
     "firstRun": false,
@@ -371,11 +379,12 @@ const menu = {
 
 window.addEventListener('message', function(e) {
     // Get the sent data
+    let net = false;
     const data = e.data;
     log("Message event: " + data.c);
     switch(data.c){
         case "get_channel_users":
-            const net = getNetwork(data.cid);
+            net = getNetwork(data.cid);
             for(let i in net.channels){
                 if(net.channels[i].name.toLowerCase() == data.name.toLowerCase()){
                     e.source.postMessage({c: "channel_users", users: net.channels[i].users}, '*');
@@ -400,9 +409,11 @@ window.addEventListener('message', function(e) {
         case "close_iframe":
             $("iframe#fram").hide().attr("src", "about:blank");
             showIframe(0);
+            capture.window = false;
             break;
         case "close_miniframe":
             showMiniFrame(0);
+            capture.window = false;
             break;
         case "get_version":
             e.source.postMessage({c: "version", version: "Burd IRC " + version + " " + release}, '*');
@@ -465,6 +476,17 @@ window.addEventListener('message', function(e) {
             break;
         case "connect":
             connectNetwork(data.id);
+            break;
+            
+        case "send_data":
+            net = getNetwork(data.cid);
+            net.sendData(data.data);
+            break;
+            
+        case "capture":
+            capture.window = e.source;
+            capture.regex = data.regex;
+            capture.cid = data.cid;
             break;
     }
 });
@@ -901,4 +923,12 @@ const connectNetwork = function(sid){
             });
         }
     }
+}
+
+const copyToClipboard = function(txt) {
+    const $temp = $("<input>");
+    $("body").append($temp);
+    $temp.val(txt).select();
+    document.execCommand("copy");
+    $temp.remove();
 }

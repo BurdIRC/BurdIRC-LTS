@@ -2,6 +2,7 @@ const channelMenu = function(e){
     const net = getNetwork(e.attr('cid'));
     const type = e.attr('type');
     if(type == "channel"){
+        if(e.find("div.item-name").text() == "") return;
         menu.create([
             { title: e.find("div.item-name").text() },
             {
@@ -32,6 +33,7 @@ const channelMenu = function(e){
             }
         ]);
     }else if(type == "pm"){
+        if(e.find("div.item-name").text() == "") return;
         menu.create([
             { title: e.find("div.item-name").text() },
             {
@@ -68,6 +70,7 @@ const channelMenu = function(e){
             }
         ]);
     }else{
+        if(e.find("div.item-name").text() == "") return;
         menu.create([
             { title: e.find("span.netname").text() },
             {
@@ -94,6 +97,28 @@ $(()=>{
     $("div#app-settings").on("click", function(e) {
         showIframe("settings.html");
         
+    });
+    
+    $("div#channel-topic").on("click", function(e) {
+        menu.create([
+            {
+                text: lang.copy,
+                icon: "/images/content-copy.svg",
+                more: false,
+                callback: function(mo){
+                    copyToClipboard($("div#channel-topic").text());
+                }
+            },
+            {
+                text: lang.edit,
+                icon: "/images/pencil.svg",
+                more: false,
+                callback: function(mo){
+                    const topic = $("div#channel-topic").text();
+                    $("input#input").val("/topic " + topic).focus();
+                }
+            }
+        ]);
     });
     
     $("div#banners").on("click", "div.button", function(e) {
@@ -175,12 +200,32 @@ $(()=>{
     $("div#userlist").on("click", "div.user", function(e){
         const usr = removeHTML(hexDecode($(this).attr("nick")));
         userMenu($("div.selected-item").attr("cid"), usr);
-        
     });
-    
+    $("div#userlist").on("contextmenu", "div.user", function(e){
+        const usr = removeHTML(hexDecode($(this).attr("nick")));
+        userMenu($("div.selected-item").attr("cid"), usr);
+    });
+
+    $("body").on("contextmenu", "div.messageuser", function(e){
+        userMenu($("div.selected-item").attr("cid"), hexDecode($(this).parent().attr("nick")));
+        e.preventDefault();
+    });
     
     $("body").on("click", "div.messageuser", function(e){
         userMenu($("div.selected-item").attr("cid"), hexDecode($(this).parent().attr("nick")));
+    });
+    
+    $("body").on("click", "div#user-count", function(e){
+        menu.create([
+            {
+                text: lang.banlist,
+                icon: "/images/format-list-bulleted.svg",
+                more: false,
+                callback: function(mo){
+                    showMiniFrame("banlist.html");
+                }
+            }
+        ]);
     });
     
     $("body").on("click", "a", function(e){

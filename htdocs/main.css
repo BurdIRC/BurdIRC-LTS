@@ -196,6 +196,7 @@
                 color: var(--dark-text);
                 overflow: hidden;
                 height: calc(100% - 30px);
+                cursor:pointer;
             }
             div#chat-area{
                 border-bottom:1px solid var(--border-color);
@@ -257,6 +258,7 @@
                 text-align:center;
                 font-size:17px;
                 border-bottom:1px solid var(--border-color);
+                cursor:pointer;
             }
             div#userlist{
                 font-size:17px;

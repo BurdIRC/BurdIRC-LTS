@@ -42,6 +42,7 @@
     "options_for_channel": "Options for %c",
     "remove": "Remove",
     "edit": "Edit",
+    "copy": "Copy",
     "add": "Add",
     "ignored": "%n added to ignore list",
     "unignored": "%n removed from ignore list",
@@ -49,6 +50,8 @@
     "notignored": "%n is not on the ignore list",
     "export_settings": "Export settings",
     "import_settings": "Import settings",
+    "banlist": "Ban List",
+    "userlist": "User List",
     
     "welcome": "<b>Welcome to Burd IRC!</b> \n Good news! If you're reading this, then you're running the latest Burd IRC! \n If you need help using the client you can find a tutorial at burdirc.haxed.net/docs \n You can also contact someone for help in #burdirc on Libera.chat \n Now just select your perferred language below and click Go!",
     
