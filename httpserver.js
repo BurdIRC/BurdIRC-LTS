@@ -63,16 +63,20 @@ const server = {
 						res.end();
 					}else{
 						console.log("dir " + filename);
-						let dhtml = "<h2>Index of " + req.url + "</h2><hr>";
+						let dhtml = "<html><head></head><body><h2>Index of " + req.url + "</h2><hr>";
+                        let tmplst = [];
 						fs.readdir(filename, function (err, files) {
 							files.forEach(function (file) {
 								dhtml += "<a href=\"" + file + "\">" + file + "</a><br>";
+                                tmplst.push(file);
 							});
-							dhtml += "<hr>Burd IRC";
+                            dhtml += "<script>const files = " + JSON.stringify(tmplst) + "</script>";
+							dhtml += "<hr>BurdIRC</body></html>";
 							res.writeHead(200, {"Content-Type": "text/html"});
 							res.write(dhtml + "\n");
 							res.end();
 						});
+                        
 					}
 				}else{
 					const mime = (mimeTypes[filename.substr(filename.lastIndexOf(".") + 1)] || "text/plain");

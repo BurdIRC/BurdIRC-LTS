@@ -1,0 +1,152 @@
+:root {
+    --background-color: #F0F0F0;
+    --nav-background: #F6F8FA;
+    --border-color: #b3b3b3;
+    --nav-item-selected-bg: #98c0ff;
+    --nav-count-bg: #1F6FEB;
+    --nav-count-color: #FFFFFF;
+    --nav-hover-color: #2700fd;
+    --nav-width: 230px;
+    --action-text-color: #d4179a;
+    --topic-height: 70px;
+    --highlight-bg: #ffee9d;
+    --nav-item-selected-color: black;
+    --message-weight: 500;
+  
+
+    --userlist-width:230px;
+    --userlist-bg: #FFFFFF;
+
+    --input-bg: white;
+
+    --dark-text: black;
+    --light-text: black;
+
+    --icon-off: BBBDC1;
+
+    --nav-active: #88d882;
+    --nav-idle: #6c7d94;
+
+    --link-color: #96caff;
+    --link-hover-color: #ffffff;
+
+    --menubar-width: 32px;
+    --menubar-background:#f0f0f0;
+
+
+    --collapased: url(/images/arrow-collapse-left.svg);
+    --uncollapased: url(/images/arrow-expand-right.svg);
+    --dots-vertical: url(/images/dots-vertical.svg);
+    --chat-info-icon: url(/images/arrow-right.svg);
+    --whois-icon: url(/images/account.svg);
+    --info-out: url(/images/arrow-left.svg);
+    --action-icon: url(/images/alpha-a-circle.svg);
+    --away-icon: url(/images/idle.svg);
+    --emoji-icon: url(/images/emoticon-excited-outline.svg);
+    --upload-icon: url(/images/upload.svg);
+    --settings-icon: url(/images/cog.svg);
+    --network-icon: url(/images/plus-thick.svg);
+    --birds: url(/images/bird-cells.svg);
+    --close-icon: url(/images/close.svg);
+    --alert-icon: url(/images/exclamation-thick.svg);
+    --bell-icon: url(/images/bell-ring.svg);
+
+
+    --nav-background: #F0F0F0;
+
+
+    color-scheme: light;
+  
+}
+
+
+
+div.menu {
+    border: 1px solid #b7b7b7;
+    box-shadow: 2px 2px 1px 0px rgb(144 144 144 / 82%);
+}
+
+a{
+    color:navy;
+}
+a:hover{
+    color:red;
+}
+div#userlist div.user{
+    font-weight:505;
+}
+
+input#input{
+    color:black;
+}
+
+::-webkit-scrollbar {
+    height: 12px;
+    width: 12px;
+    background: #d8d8d8;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #484848;
+    -webkit-border-radius: 1ex;
+    -webkit-box-shadow: 0px 1px 2px rgb(0 0 0 / 75%);
+}
+
+
+
+/* settings theme */
+
+
+div.settings_app{
+    background:white;
+}
+body.settings_body{
+    background: linear-gradient(to left, white 0%,white 50%,white 50%,#F0F0F0 50%,#F0F0F0 100%);
+    color:black;
+}
+div.settings_nav{
+    background:#F0F0F0;
+    color:black;
+}
+div.tab:hover,div.selected{
+    background:#98C0FF;
+    color:black;
+}
+div.switch[theme='dark'] {
+    background: url(/images/toggle-switch.svg) no-repeat center right;
+    background-size: 42px;
+}
+div.switch[theme='dark'] {
+    background: url(/images/toggle-switch.svg) no-repeat center right;
+    background-size: 42px;
+}
+div.content div.off {
+    background-image: url(/images/toggle-switch-off.svg);
+}
+div.content div.switch:hover{
+    background-color:#98C0FF;
+}
+div.aboutimg{
+    background-image:url(/images/code.png);
+}
+div.item-list {
+    background: white;
+}
+div.list-headers {
+    background: #d7d8de;
+}
+div.input-items input[type="text"] {
+    background-color: #d7d8de;
+    color:black;
+}
+div.list-items:hover {
+    background: #98C0FF;
+    cursor: pointer;
+}
+div.input-items input[type="button"] {
+    background: #d7d8de;
+    cursor: pointer;
+}
+div.input-items input[type="button"]:hover {
+    border-color:#2700fd;
+}

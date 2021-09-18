@@ -7,7 +7,7 @@ const channelMenu = function(e){
             { title: e.find("div.item-name").text() },
             {
                 text: lang.close,
-                icon: "/images/close.svg",
+                icon: "images/close.svg",
                 more: false,
                 callback: function(mo){
                     GUI.removeChannel(e.attr('cid'), hexDecode(e.attr('name')));
@@ -15,7 +15,7 @@ const channelMenu = function(e){
             },
             {
                 text: lang.cycle,
-                icon: "/images/refresh.svg",
+                icon: "images/refresh.svg",
                 more: false,
                 callback: function(mo){
                     getNetwork(e.attr('cid')).sendData("PART " + hexDecode(e.attr('name')));
@@ -25,7 +25,7 @@ const channelMenu = function(e){
             { text: "-" },
             {
                 text: lang.channel_options,
-                icon: "/images/tune.svg",
+                icon: "images/tune.svg",
                 more: false,
                 callback: function(mo){
                     showMiniFrame("channel_settings.html?sid=" + networks[e.attr('cid')].guid + "&channel=" + e.attr('name'));
@@ -38,7 +38,7 @@ const channelMenu = function(e){
             { title: e.find("div.item-name").text() },
             {
                 text: lang.close,
-                icon: "/images/close.svg",
+                icon: "images/close.svg",
                 more: false,
                 callback: function(mo){
                     GUI.removePM(e.attr('cid'), hexDecode(e.attr('name')));
@@ -46,7 +46,7 @@ const channelMenu = function(e){
             },
             {
                 text: lang.ignore,
-                icon: "/images/account-cancel.svg",
+                icon: "images/account-cancel.svg",
                 more: false,
                 callback: function(mo){
                     //GUI.removeChannel(e.attr('cid'), hexDecode(e.attr('name')));
@@ -70,12 +70,11 @@ const channelMenu = function(e){
             }
         ]);
     }else{
-        if(e.find("div.item-name").text() == "") return;
         menu.create([
             { title: e.find("span.netname").text() },
             {
                 text: lang.close_network,
-                icon: "/images/close.svg",
+                icon: "images/close.svg",
                 more: false,
                 callback: function(mo){
                     GUI.removeNetwork(e.attr('cid'));
@@ -103,7 +102,7 @@ $(()=>{
         menu.create([
             {
                 text: lang.copy,
-                icon: "/images/content-copy.svg",
+                icon: "images/content-copy.svg",
                 more: false,
                 callback: function(mo){
                     copyToClipboard($("div#channel-topic").text());
@@ -111,7 +110,7 @@ $(()=>{
             },
             {
                 text: lang.edit,
-                icon: "/images/pencil.svg",
+                icon: "images/pencil.svg",
                 more: false,
                 callback: function(mo){
                     const topic = $("div#channel-topic").text();
@@ -133,12 +132,12 @@ $(()=>{
             showNavPane = true;
             showNav();
             $("div#nav-collapse").removeClass("ison");
-            $("div#nav-collapse").css("background-image", "url(images/white/arrow-collapse-left.svg)");
+            $("div#nav-collapse").css("background-image", "var(--collapased)");
         }else{
             showNavPane = false;
             hideNav();
             $("div#nav-collapse").addClass("ison");
-            $("div#nav-collapse").css("background-image", "url(images/white/arrow-expand-right.svg)");
+            $("div#nav-collapse").css("background-image", "var(--uncollapased)");
         }
     });
     
@@ -219,7 +218,7 @@ $(()=>{
         menu.create([
             {
                 text: lang.banlist,
-                icon: "/images/format-list-bulleted.svg",
+                icon: "images/format-list-bulleted.svg",
                 more: false,
                 callback: function(mo){
                     showMiniFrame("banlist.html");
@@ -253,7 +252,7 @@ const userMenu = function(cID,usr){
         },
         {
             text: lang.open_query,
-            icon: "/images/comment-account.svg",
+            icon: "images/comment-account.svg",
             more: false,
             nick: usr,
             callback: function(mo){
@@ -262,7 +261,7 @@ const userMenu = function(cID,usr){
         },
         {
             text: lang.user_info,
-            icon: "/images/card-account-details.svg",
+            icon: "images/card-account-details.svg",
             more: false,
             nick: usr,
             callback: function(mo){
@@ -271,7 +270,7 @@ const userMenu = function(cID,usr){
         },
         {
             text: lang.version,
-            icon: "/images/counter.svg",
+            icon: "images/counter.svg",
             more: false,
             nick: usr,
             callback: function(mo){
@@ -280,7 +279,7 @@ const userMenu = function(cID,usr){
         },
         {
             text: lang.ping,
-            icon: "/images/sync.svg",
+            icon: "images/sync.svg",
             more: false,
             nick: usr,
             callback: function(mo){
@@ -290,7 +289,7 @@ const userMenu = function(cID,usr){
         
         {
             text: lang.ignore,
-            icon: "/images/account-cancel.svg",
+            icon: "images/account-cancel.svg",
             more: false,
             nick: usr,
             callback: function(mo){
@@ -316,7 +315,7 @@ const userMenu = function(cID,usr){
         
         {
             text: lang.moderation,
-            icon: "/images/gavel.svg",
+            icon: "images/gavel.svg",
             more: true,
             nick: usr,
             callback: function(mo){

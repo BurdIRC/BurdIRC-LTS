@@ -24,6 +24,7 @@ const settings = {
     "showInputNick": true,
     "showNickColors": true,
     "showIdleStatus": true,
+    "theme": "default.css",
     
     "zoom": 1,
     
@@ -231,7 +232,13 @@ function resizeWindow(){
 }
 
 
+let userColors = "ABCDEFABCDEFABCDEFABCDEFABCDEFABCDEF";
+
 $(function(){
+    
+    if($(":root").css("color-scheme") == "light") userColors = "0123456789ABC0123456789ABC0123456789ABC";
+    
+    setTheme(settings.theme);
     
     document.title = "BurdIRC ";
     
@@ -390,6 +397,10 @@ window.addEventListener('message', function(e) {
                     e.source.postMessage({c: "channel_users", users: net.channels[i].users}, '*');
                 }
             }
+            break;
+            
+        case "get_theme":
+            e.source.postMessage({c: "theme", theme: settings.theme }, '*');
             break;
             
         case "get_current_channel":
@@ -931,4 +942,13 @@ const copyToClipboard = function(txt) {
     $temp.val(txt).select();
     document.execCommand("copy");
     $temp.remove();
+}
+
+
+const setTheme = function(e){
+    $("link#theme").attr("href", "themes/" + e);
+    setTimeout(function(){
+        userColors = (($(":root").css("color-scheme") == "light") ? "0123456789ABC0123456789ABC0123456789ABC" : "ABCDEFABCDEFABCDEFABCDEFABCDEFABCDEF");
+        $("div.nav-item.selected-item").click();
+    },1000);
 }

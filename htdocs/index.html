@@ -6,18 +6,21 @@
         <link href="css/menu.css" rel="stylesheet">
 		<link href="main.css" rel="stylesheet">
         
-        <link rel="icon" href="/icons/icon.ico"><!-- 32×32 -->
-        <link rel="apple-touch-icon" href="/icons/512.png"><!-- 180×180 -->
+        <link id="theme" href="themes/default.css" rel="stylesheet">
+
+        <link rel="icon" href="/icons/icon.ico">
+        <link rel="apple-touch-icon" href="/icons/512.png">
         <link rel="manifest" href="/manifest.json">
         
-        <title>Burd Web IRC</title>
+        <title>BurdIRC</title>
         
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+        
+        <script src="js/jquery.min.js"></script>
         <script src="js/main.js"></script>
         <script src="js/key_events.js"></script>
         <script src="js/click_events.js"></script>
         <script src="js/enum.js"></script>
-        <script src="js/control_server.js"></script>
         <script src="js/burd.js"></script>
         <script src="js/gui.js"></script>
         <script src="js/input_parse.js"></script>
@@ -25,13 +28,39 @@
         <script src="js/ignore.js"></script>
         <script src="js/usercommands.js"></script>
 
+        <script>if (window.module) module = window.module;</script>
 
         <style>
 
         </style>
         <script>
-        
+            const isElectron = function() {
+                // Renderer process
+                if (typeof window !== 'undefined' && typeof window.process === 'object' && window.process.type === 'renderer') {
+                    return true;
+                }
 
+                // Main process
+                if (typeof process !== 'undefined' && typeof process.versions === 'object' && !!process.versions.electron) {
+                    return true;
+                }
+
+                // Detect the user agent when the `nodeIntegration` option is set to true
+                if (typeof navigator === 'object' && typeof navigator.userAgent === 'string' && navigator.userAgent.indexOf('Electron') >= 0) {
+                    return true;
+                }
+
+                return false;
+            }
+        
+        
+            const jq = document.createElement('script');
+            if(isElectron()){
+                jq.src = "js/control_server_electron.js";
+            }else{
+                jq.src = "js/control_server.js";
+            }
+            $("head")[0].appendChild(jq);
 
         </script>
     </head>
@@ -224,7 +253,7 @@
         </template>   
 
         <audio id="audioe">
-            <source src="/sounds/appointed-529.ogg" type="audio/mpeg">
+            <source src="sounds/appointed-529.ogg" type="audio/mpeg">
         </audio>
         
     </body>

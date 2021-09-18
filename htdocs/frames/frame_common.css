@@ -3,7 +3,7 @@
 }
 div.switch{
     cursor:pointer;
-    background: url('/images/toggle-switch.svg') no-repeat center right;
+    background: url('../images/toggle-switch.svg') no-repeat center right;
     background-size:42px;
     display: flex;
     height:32px;
@@ -16,17 +16,17 @@ div.switch:hover{
     background-color:#e8e8e8;
 }
 div.off{
-    background-image: url('/images/toggle-switch-off.svg');
+    background-image: url('../images/toggle-switch-off.svg');
 }
 div.switch[theme='dark']{
-    background: url('/images/white/toggle-switch.svg') no-repeat center right;
+    background: url('../images/white/toggle-switch.svg') no-repeat center right;
     background-size:42px;
 }
 div.switch[theme='dark']:hover{
     background-color: #161b22;
 }
 div.off[theme='dark']{
-    background-image: url('/images/white/toggle-switch-off.svg');
+    background-image: url('../images/white/toggle-switch-off.svg');
 }
 h1,h2,h3,h4{
     padding:0;

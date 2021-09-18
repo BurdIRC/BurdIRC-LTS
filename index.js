@@ -7,6 +7,8 @@ const wsServer = require("./websocketserver.js");
 const pjson = require('./package.json');
 const cp = require('child_process');
 
+const args = process.argv.slice(2);
+
 const settings = require('./config.json');
 
 if(settings.browser == "edge") settings.browser = "msedge";

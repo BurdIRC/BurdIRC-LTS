@@ -1107,9 +1107,6 @@ class IRC{
 
 
 
-
-
-
 function strToColor(str) {
     if(!settings.showNickColors) return "#d6d6d6";
     let hash = 0;
@@ -1118,10 +1115,11 @@ function strToColor(str) {
     hash = str.charCodeAt(i) + ((hash << 5) - hash);
     }
     hash = hash.toString().replace(/\-/g, "");
-    const colors = "ABCDEFABCDEFABCDEFABCDEFABCDEFABCDEF";
+    
+    //0123456789ABC0123456789ABC0123456789ABC
     let cColor = "";
     for(let i in hash){
-      cColor += colors[hash[i]];
+      cColor += userColors[hash[i]];
     }
     return ("#" + cColor.substr(0,6));
 }
