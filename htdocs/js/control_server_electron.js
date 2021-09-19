@@ -1,9 +1,12 @@
+
+const {shell} = require('electron');
+
+
 class ControlServer{
     constructor(e) {
         const _self = this;
         this.ipc = require('electron').ipcRenderer;
         this.ipc.on('control', function(event, response){
-            console.log(response);
             _self.onData({data: response});
         });
         
@@ -36,8 +39,6 @@ class ControlServer{
     }
     
     onData(e){
-        
-        console.log(e.data);
         
         const type = e.data.substr(0,1);
         
@@ -130,3 +131,22 @@ function setupControlSocket(){
 }
 
 setupControlSocket();
+
+
+
+$(function(){
+    $("body").on("click", "a", function(e){
+        const scheme = $(this).attr("href").split(":")[0];
+        if(scheme){
+            switch(scheme){
+                case "userlist":
+                    showMiniFrame("userlist.html");
+                    break;
+                default:
+                    log("opening external link");
+                    shell.openExternal($(this).attr("href"));
+            }
+        }
+        e.preventDefault();
+    });
+});

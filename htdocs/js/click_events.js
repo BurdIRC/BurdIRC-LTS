@@ -227,19 +227,6 @@ $(()=>{
         ]);
     });
     
-    $("body").on("click", "a", function(e){
-        console.log($(this).attr("href"));
-        const scheme = $(this).attr("href").split(":")[0];
-        if(scheme){
-            switch(scheme){
-                case "userlist":
-                    showMiniFrame("userlist.html");
-                    e.preventDefault();
-                    break;
-            }
-        }
-    });
-    
 });
 
 
