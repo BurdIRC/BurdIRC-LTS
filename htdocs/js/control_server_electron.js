@@ -150,3 +150,11 @@ $(function(){
         e.preventDefault();
     });
 });
+
+setTimeout(function(){
+    $.getJSON( "https://burdirc.haxed.net/updates.json?channel=Electron", function( data ) {
+        if(data.version > version){
+            alert("There is a new version of this app, version " + data.version + ". Please download the new version at http://burdirc.haxed.net/");
+        }
+    });
+},1000);
