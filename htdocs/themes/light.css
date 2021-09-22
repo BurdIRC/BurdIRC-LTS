@@ -12,6 +12,7 @@
     --highlight-bg: #ffee9d;
     --nav-item-selected-color: black;
     --message-weight: 500;
+    --chat-area-background: #ffffff;
   
 
     --userlist-width:230px;
@@ -34,25 +35,22 @@
     --menubar-background:#f0f0f0;
 
 
-    --collapased: url(/images/arrow-collapse-left.svg);
-    --uncollapased: url(/images/arrow-expand-right.svg);
-    --dots-vertical: url(/images/dots-vertical.svg);
-    --chat-info-icon: url(/images/arrow-right.svg);
-    --whois-icon: url(/images/account.svg);
-    --info-out: url(/images/arrow-left.svg);
-    --action-icon: url(/images/alpha-a-circle.svg);
-    --away-icon: url(/images/idle.svg);
-    --emoji-icon: url(/images/emoticon-excited-outline.svg);
-    --upload-icon: url(/images/upload.svg);
-    --settings-icon: url(/images/cog.svg);
-    --network-icon: url(/images/plus-thick.svg);
-    --birds: url(/images/bird-cells.svg);
-    --close-icon: url(/images/close.svg);
-    --alert-icon: url(/images/exclamation-thick.svg);
-    --bell-icon: url(/images/bell-ring.svg);
-
-
-    --nav-background: #F0F0F0;
+    --collapased: url(./images/arrow-collapse-left.svg);
+    --uncollapased: url(./images/arrow-expand-right.svg);
+    --dots-vertical: url(./images/dots-vertical.svg);
+    --chat-info-icon: url(./images/arrow-right.svg);
+    --whois-icon: url(./images/account.svg);
+    --info-out: url(./images/arrow-left.svg);
+    --action-icon: url(./images/alpha-a-circle.svg);
+    --away-icon: url(./images/idle.svg);
+    --emoji-icon: url(./images/emoticon-excited-outline.svg);
+    --upload-icon: url(./images/upload.svg);
+    --settings-icon: url(./images/cog.svg);
+    --network-icon: url(./images/plus-thick.svg);
+    --birds: url(./images/bird-cells.svg);
+    --close-icon: url(./images/close.svg);
+    --alert-icon: url(./images/exclamation-thick.svg);
+    --bell-icon: url(./images/bell-ring.svg);
 
 
     color-scheme: light;
@@ -113,21 +111,21 @@ div.tab:hover,div.selected{
     color:black;
 }
 div.switch[theme='dark'] {
-    background: url(/images/toggle-switch.svg) no-repeat center right;
+    background: url(../images/toggle-switch.svg) no-repeat center right;
     background-size: 42px;
 }
 div.switch[theme='dark'] {
-    background: url(/images/toggle-switch.svg) no-repeat center right;
+    background: url(../images/toggle-switch.svg) no-repeat center right;
     background-size: 42px;
 }
 div.content div.off {
-    background-image: url(/images/toggle-switch-off.svg);
+    background-image: url(../images/toggle-switch-off.svg);
 }
 div.content div.switch:hover{
     background-color:#98C0FF;
 }
 div.aboutimg{
-    background-image:url(/images/code.png);
+    background-image:url(../images/code.png);
 }
 div.item-list {
     background: white;

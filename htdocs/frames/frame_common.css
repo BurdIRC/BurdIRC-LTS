@@ -148,3 +148,25 @@ div.list-items:hover{
     background:rgb(50, 60, 74);
     cursor:pointer;
 }
+div.select{
+    background-size:42px;
+    height:32px;
+    align-items: center;
+    font-size:17px;
+    user-select: none; 
+    padding:5px;
+}
+div.select div.select-title{
+    float:left;
+}
+div.select select{
+    float:right;
+    font-size:17px;
+    width:150px;
+    background:transparent;
+    border-radius:5px;
+}
+div.select select option{
+    background:white;
+    color:black;
+}

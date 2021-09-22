@@ -12,6 +12,7 @@
     --highlight-bg: #161b22;
     --nav-item-selected-color: white;
     --message-weight: 300;
+    --chat-area-background: transparent;
 
 
     --userlist-width:230px;
@@ -216,6 +217,7 @@ div#chat-area{
     height: calc(100% - var(--topic-height) - 50px);
     overflow-x: hidden;
     overflow-y: auto;
+    background:var(--chat-area-background);
 }
 div#chat-input{
     height:40px;
@@ -272,6 +274,7 @@ div#user-count{
     font-size:17px;
     border-bottom:1px solid var(--border-color);
     cursor:pointer;
+    height: 30px;
 }
 div#userlist{
     font-size:17px;

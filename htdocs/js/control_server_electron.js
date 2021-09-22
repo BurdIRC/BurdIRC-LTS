@@ -158,3 +158,25 @@ setTimeout(function(){
         }
     });
 },1000);
+
+
+function getThemes(callback){
+    const themes = [];
+    const fs = require('fs');
+    if(fs.existsSync("./resources/app/htdocs/themes")){
+        fs.readdir("./resources/app/htdocs/themes", (err, files) => {
+            files.forEach(file => {
+                themes.push(file);
+            });
+            callback(themes);
+        });
+
+    }else{
+        fs.readdir("./htdocs/themes/", (err, files) => {
+            files.forEach(file => {
+                themes.push(file);
+            });
+            callback(themes);
+        });
+    }
+}

@@ -52,6 +52,11 @@
     "import_settings": "Import settings",
     "banlist": "Ban List",
     "userlist": "User List",
+    "view_entire_list": "View entire list...",
+    "search_list": "Search list",
+    "unban": "Unban",
+    "request_ops": "Request ops",
+    "theme": "Theme",
     
     "welcome": "<b>Welcome to Burd IRC!</b> \n Good news! If you're reading this, then you're running the latest Burd IRC! \n If you need help using the client you can find a tutorial at burdirc.haxed.net/docs \n You can also contact someone for help in #burdirc on Libera.chat \n Now just select your perferred language below and click Go!",
     

@@ -13,6 +13,7 @@
         
             let cid = 0;
             let cname = "#";
+            let users = [];
             
             let lang = {};
             let servers = {};
@@ -124,6 +125,22 @@
                 });
                             
                 
+                $("body").on("keyup", "input#search", function(e){
+                    const tmpArr = [];
+                    for(let i in users){
+                        if(users[i][0].toLowerCase().indexOf($("input#search").val().toLowerCase()) > -1) tmpArr.push(users[i]);
+                    }
+                    applyArr(tmpArr);
+                });
+                
+                $("body").on("click", "div.user", function(e){
+                   $("div.usersel").removeClass("usersel");
+                   $(this).addClass("usersel");
+                });
+                
+                $("body").on("click", "input.action", function(e){
+                   window.parent.postMessage({c: "user_action", type: $(this)[0].id, channel: cname, cid: cid, user: $("div.usersel").text()}, '*');
+                });
                 
             });
            
@@ -136,18 +153,24 @@
                 switch(data.c){
                     case "lang":
                         lang = data.lang;
+                        $("input#ban").val(lang.ban);
+                        $("input#kick").val(lang.kick);
+                        $("input#op").val(lang.op);
+                        $("input#voice").val(lang.voice);
                         break;
                     case "current_channel":
                         console.log(data);
                         cid = data.cid;
                         cname = data.name;
                         window.parent.postMessage({c: "get_channel_users", name: cname, cid: cid}, '*');
-                        $("h3#maintitle").text(data.name + " userlist");
+                        $("h3#maintitle").text(data.name + " " + lang.userlist);
                         break;
                     case "channel_users":
                         for(let i in data.users){
-                            $("div.users").append('<div class="user">' + removeHTML(data.users[i][0]) + '</div>');
+                            //$("div.users").append('<div class="user">' + removeHTML(data.users[i][0]) + '</div>');
+                            users.push(data.users[i]);
                         }
+                        applyArr(users);
                         break;
                 }
             });
@@ -155,9 +178,21 @@
                 if(e==undefined) return "";
                 return e.replace(/\&/g, "&amp;").replace(/\</g, "&lt;");
             }
+            
+            const applyArr = function(arr){
+                $("div.users").html("");
+                for(let i in arr){
+                    $("div.users").append('<div class="user">' + removeHTML(arr[i][0]) + '</div>');
+                }
+                $("div.user:first").addClass("usersel");
+            }
+            
+            onLanguage = function(){
+                
+            }
         </script>
 
-        <style>
+        <style> 
 
             
             body,html{
@@ -191,7 +226,7 @@
             }
             
             div#content{
-                height: 470px;
+                height: 455px;
             }
             input{
                 background: #5d7384;
@@ -231,6 +266,7 @@
                 font-size:17px;
                 padding:1px;
                 cursor:pointer;
+                padding:5px;
             }
             div.user:hover{
                 background:#d9e3ec;
@@ -240,11 +276,33 @@
                 overflow: auto;
                 
             }
+            input#search{
+                background:white;
+                color:black;
+                width: 140px;
+            }
+            input[type="button"]{
+                background:#1F6FEB;
+            }
+            input[type="button"]:hover{
+                border-color:red;
+            }
+            div.usersel,div.usersel:hover{
+                background:#1F6FEB;
+                color:white;
+            }
         </style>
     </head>
     <body>
         <div id="close">&nbsp;</div>
         <h3 id="maintitle" style="padding: 0;margin: 0;margin-bottom: 10px;">Userlist</h3>
+        <div style="margin-bottom:5px;">
+            <input type="text" id="search" autocomplete="off" placeholder="Search...">
+            <input type="button" class="action" id="ban" value="%Ban">
+            <input type="button"  class="action" id="kick" value="%Kick">
+            <input type="button"  class="action" id="op" value="%Op">
+            <input type="button"  class="action" id="voice" value="%Voice">
+        </div>
         <div id="content">
             <div class="users">
             </div>

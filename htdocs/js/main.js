@@ -403,6 +403,13 @@ window.addEventListener('message', function(e) {
             e.source.postMessage({c: "theme", theme: settings.theme }, '*');
             break;
             
+        case "get_themes":
+            getThemes((themes)=>{
+                e.source.postMessage({c: "themes", themes: themes }, '*');
+            });
+            
+            break;
+            
         case "get_current_channel":
             e.source.postMessage({c: "current_channel", cid: $("div.selected-item").attr("cid"), name: hexDecode($("div.selected-item").attr("name")) }, '*');
             break;
@@ -498,6 +505,39 @@ window.addEventListener('message', function(e) {
             capture.window = e.source;
             capture.regex = data.regex;
             capture.cid = data.cid;
+            break;
+            
+        case "user_action":
+            net = getNetwork(data.cid);
+            console.log(data);
+            switch(data.type){
+                
+                case "ban":
+                    for(let i in net.users){
+                        if(net.users[i][0].toLowerCase() == data.user.toLowerCase()){
+                            net.sendData("MODE " + data.channel + " +b *!" + net.users[i][1].split("!")[1]);
+                            break;
+                        }
+                    }
+                    break;
+                    
+                case "kick":
+                    net.sendData("KICK " + data.channel + " " + data.user);
+                    break;
+                    
+                case "op":
+                    net.sendData("MODE " + data.channel + " +o " + data.user);
+                    break;
+                    
+                case "voice":
+                    net.sendData("MODE " + data.channel + " +v " + data.user);
+                    break;
+                    
+                case "unban":
+                    net.sendData("MODE " + data.channel + " -b " + data.user);
+                    break;
+                
+            }
             break;
     }
 });
@@ -816,7 +856,7 @@ const applySettings = function(){
         $("style#no_date_style").remove();
         $("head").append('<style id="no_date_style">div.messagedate{display:none;};</style>');
     }
-    
+    setTheme(settings.theme);
     
     $("div.selected-item").click();
     
@@ -946,9 +986,10 @@ const copyToClipboard = function(txt) {
 
 
 const setTheme = function(e){
+    settings.theme = e;
     $("link#theme").attr("href", "themes/" + e);
     setTimeout(function(){
         userColors = (($(":root").css("color-scheme") == "light") ? "0123456789ABC0123456789ABC0123456789ABC" : "ABCDEFABCDEFABCDEFABCDEFABCDEFABCDEF");
         $("div.nav-item.selected-item").click();
-    },1000);
+    },100);
 }

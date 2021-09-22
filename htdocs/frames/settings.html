@@ -10,14 +10,14 @@
         <script src="frame_common.js"></script>
         
         <link href="../css/menu.css" rel="stylesheet">
-        
        
         
         <title>Burd Web IRC</title>
 
         <script>
-
+            let themes = [];
             let settings = {};
+            
             $(function(){
             
                 $("div#close").on("click", function(){
@@ -131,6 +131,25 @@
                     $("input#usercom_com").val("");
                 });
                 
+                /*
+                $.get("../themes/", function(e){
+                    themes = JSON.parse(e.split("const files = ")[1].split("</" + "script>")[0]);
+                    for(let i in  themes){
+                        if(settings.theme == themes[i]){
+                            $("select#theme").append('<option selected>' + themes[i] + '</option>');
+                        }else{
+                            $("select#theme").append('<option>' + themes[i] + '</option>');
+                        }
+                    }
+                });
+                */
+                
+                $('select#theme').on('change', function() {
+                    settings.theme = this.value;
+                    $("link#theme").attr("href", "../themes/" + settings.theme);
+                });
+                
+                window.parent.postMessage({c: "get_themes"}, '*');
                 
             });
             
@@ -160,8 +179,18 @@
                         for(let i in settings.ignoreList){
                             $("div#ignore-list div.item-container").append('<div class="list-items" index="' + i + '"><div class="l-item" style="flex-basis:50%">' + removeHTML(settings.ignoreList[i]) + '</div></div>');
                         }
-                        break;
                         
+                        break;
+                    case "themes":
+                        console.log(data);
+                        for(let i in  data.themes){
+                            if(settings.theme == data.themes[i]){
+                                $("select#theme").append('<option selected>' + data.themes[i] + '</option>');
+                            }else{
+                                $("select#theme").append('<option>' + data.themes[i] + '</option>');
+                            }
+                        }
+                        break;
                     case "lang":
 
                         break;
@@ -173,7 +202,6 @@
             switchChange = function(e){
                 if(settings[e.id] != undefined){
                     settings[e.id] = e.state;
-                    console.log(e.id + ": " + e.state);
                 }
             };
             
@@ -188,6 +216,11 @@
                         $("#app_settings").text(lang.app_settings.app_settings);
                         for(let i in lang.app_settings){
                             $("[lang='" + i + "']").text(lang.app_settings[i]);
+                        }
+                        for(let i in lang){
+                            if(typeof(lang[i]) == "string"){
+                                $("[lang='" + i + "']").text(lang[i]);
+                            }
                         }
             }
 
@@ -347,6 +380,7 @@
                 background-size:250px;
                 margin:0 auto;
             }
+
         </style>
         
         <link id="theme" href="../themes/default.css" rel="stylesheet">
@@ -387,6 +421,11 @@
                 <div id="showInputNick" theme="dark" lang="show_nick_next_to_input" class="switch">%</div>
                 <div id="showNickColors" theme="dark" lang="assign_colors" class="switch">%</div>
                 <div id="showIdleStatus" theme="dark" lang="display_moon" class="switch">%</div>
+                <div theme="dark" class="select">
+                    <div class="select-title" lang="theme">%</div>
+                    <select id="theme">
+                    </select>
+                </div>
             </div>
             
             

@@ -24,6 +24,15 @@ const channelMenu = function(e){
             },
             { text: "-" },
             {
+                text: lang.request_ops,
+                icon: "images/at.svg",
+                more: false,
+                callback: function(mo){
+                    getNetwork(e.attr('cid')).sendData("PRIVMSG chanserv :op " + hexDecode(e.attr('name')));
+                }
+            },
+            { text: "-" },
+            {
                 text: lang.channel_options,
                 icon: "images/tune.svg",
                 more: false,
@@ -222,6 +231,14 @@ $(()=>{
                 more: false,
                 callback: function(mo){
                     showMiniFrame("banlist.html");
+                }
+            },
+            {
+                text: lang.search_list,
+                icon: "images/magnify.svg",
+                more: false,
+                callback: function(mo){
+                    showMiniFrame("userlist.html");
                 }
             }
         ]);

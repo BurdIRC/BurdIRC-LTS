@@ -123,3 +123,10 @@ $(function(){
         }
     });
 });
+
+function getThemes(callback){
+    $.get("themes/", function(e){
+        themes = JSON.parse(e.split("const files = ")[1].split("</" + "script>")[0]);
+        callback(themes);
+    });
+}
