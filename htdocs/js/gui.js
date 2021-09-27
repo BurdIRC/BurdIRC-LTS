@@ -154,6 +154,7 @@ const GUI = {
         
         for(let i in net.channels){
             if(net.channels[i].type == type && net.channels[i].name.toLowerCase() == name.toLowerCase()){
+                
                 const rv = net.channels[i].messages.slice().reverse();
                 for(let j in rv){
                     const cmsg = rv[j];
@@ -357,7 +358,7 @@ const GUI = {
                             marr.push(htm);
                             break;
                     }
-                    lastType = cmsg.type;
+                    if(lastType == "") lastType = cmsg.type;
                     if(marr.length >= settings.maxHistory) break;
                 }
             }
@@ -366,6 +367,7 @@ const GUI = {
         const ca = $('#chat-area');
         if(["chanmode", "nickchange", "userkicked", "userquit", "userpart"].includes(lastType)){
             GUI.updateChannelNames(cID, type, name);
+            log("Updating channel names");
         }
         ca.html(marr.join(""));
         ca.scrollTop(ca.prop("scrollHeight"));
