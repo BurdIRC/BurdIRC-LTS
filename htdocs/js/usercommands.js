@@ -30,9 +30,7 @@ const userCommands = function(input, cID, type, channel){
             rcmd = rcmd.replace(/\%n/g, net.nick);
             rcmd = rcmd.replace(/\%t/g, d.toGMTString());
             rcmd = rcmd.replace(/\%v/g, version);
-            
-            
-            console.log(rcmd);
+
             parseInput("/" + rcmd, cID, type, channel);
             return true;
         }

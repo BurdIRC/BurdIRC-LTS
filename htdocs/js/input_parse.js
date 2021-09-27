@@ -11,7 +11,6 @@ $(function(){
 
 const parseInput = (input, cID, type, channel)=>{
     if(input.length < 1) return;
-    
     messageCounter = 5;
     
     inputHistory.items.splice(0, 0, input);
@@ -258,10 +257,11 @@ const parseInput = (input, cID, type, channel)=>{
                 break;
                 
             case "MODE":
+            
                 if(bits.length == 1){
                     net.sendData("MODE " + GUI.current.name);
                 }else{
-                    if(bits[1][0] == "#"){
+                    if(bits[1].toLowerCase() == net.nick.toLowerCase()){
                         net.sendData("MODE " + _input);
                         addInfoOut("MODE " + _input, "*");
                     }else{
@@ -416,8 +416,7 @@ const parseInput = (input, cID, type, channel)=>{
             default:
                 //addInfo(lang.invalid_command.replace("%c", command.toUpperCase()), "*");
                 //net.raiseEvent("message", {sender: net, cID: id, type: typ, name: chan});
-                
-                if(!userCommands(input, cID, type, channel)) net.sendData(input.substr(1));
+                if(!userCommands(input, id, type, channel)) net.sendData(input.substr(1));
                 break;
         }
     }else{
