@@ -1,0 +1,45 @@
+:root {
+    --input-bg: black;
+
+    --dark-text: white;
+    --light-text: white;
+    --menubar-background:black;
+    --chat-area-background: #0000006b;
+    --menubar-background: #00000061;
+    --input-bg: #1c526e;
+    --border-color: #ffffff52;
+    --userlist-bg: #00204ca1;
+    --nav-item-selected-bg: #002b748c;
+    --nav-count-bg: #00368b;
+    --highlight-bg: #0000005e;
+
+    color-scheme: dark;
+  
+}
+
+html,body{
+    background: rgb(59,106,185);
+    background: linear-gradient(149deg, rgba(59,106,185,1) 0%, rgba(59,106,185,1) 35%, rgba(39,172,192,1) 82%, rgba(41,154,187,1) 100%);
+}
+
+div#nav-pane{
+    background:transparent;
+}
+
+
+::-webkit-scrollbar-thumb {
+    background: #002e3a;
+    -webkit-border-radius: 1ex;
+    -webkit-box-shadow: 0px 1px 2px rgb(0 0 0 / 75%);
+}
+
+::-webkit-scrollbar {
+    height: 12px;
+    width: 12px;
+    background: #3779bb;
+}
+
+div#input-area {
+    border: 1px solid #ffffff;
+}
+

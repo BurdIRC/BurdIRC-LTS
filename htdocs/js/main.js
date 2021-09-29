@@ -434,7 +434,7 @@ window.addEventListener('message', function(e) {
             capture.window = false;
             break;
         case "get_version":
-            e.source.postMessage({c: "version", version: "Burd IRC " + version + " " + release}, '*');
+            e.source.postMessage({c: "version", version: "BurdIRC " + version + " " + release}, '*');
             break;
         case "get_lang":
             e.source.postMessage({c: "lang", lang: lang}, '*');

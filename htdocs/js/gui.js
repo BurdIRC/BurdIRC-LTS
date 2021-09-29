@@ -515,7 +515,7 @@ const GUI = {
             }
         }
         $("input#input").focus();
-        document.title = "Burd IRC " + version + " - " + name;
+        document.title = "BurdIRC " + version + " - " + name;
         const ca = $('#chat-area');
         ca.scrollTop(ca.prop("scrollHeight"));
     }
