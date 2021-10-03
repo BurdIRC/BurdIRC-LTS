@@ -88,8 +88,16 @@ const parseInput = (input, cID, type, channel)=>{
     }
 
     
-    
-    if(input.substr(0,1) == "/"){
+    if(input.substr(0,2) == "//"){
+        if(input.match(/nickserv/ig)!=null) return addInfo("Your message was not sent for security reasons. (Nickserv was detected in a // message)", "*");
+        net.sendData("PRIVMSG " + GUI.current.name + " :" + input.substr(1));
+        net.addChannelMessage(GUI.current.type, GUI.current.name, {
+            type: "usermessage",
+            nick: net.nick,
+            mask: net.nick + "!~@~",
+            message: input.substr(1)
+        });
+    }else if(input.substr(0,1) == "/"){
         switch(command.toUpperCase()){
             
             case "EVAL":
@@ -421,6 +429,7 @@ const parseInput = (input, cID, type, channel)=>{
         }
     }else{
         /* send message */
+        if(input.trim().match(/(^\/)(ns\s|nickserv|(.*)nickserv)/) != null) return addInfo("Your message was not sent for security reasons. (Nickserv slip was detected)", "*");
         net.sendData("PRIVMSG " + GUI.current.name + " :" + input);
         net.addChannelMessage(GUI.current.type, GUI.current.name, {
             type: "usermessage",

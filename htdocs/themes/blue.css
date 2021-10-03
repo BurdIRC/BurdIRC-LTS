@@ -43,3 +43,25 @@ div#input-area {
     border: 1px solid #ffffff;
 }
 
+
+div.settings_app {
+    background: #000000a3;
+    width: 800px;
+    margin: 0 auto;
+    height: 100%;
+    position: relative;
+}
+
+div.settings_nav {
+    width: 200px;
+    background: #00000047;
+    height: 100%;
+    border-right: 1px solid #3e4148;
+    padding-right: 10px;
+    color: #d8d8d8;
+    float: left;
+}
+div.selected, div.tab:hover {
+    background: #285197;
+    color: white;
+}

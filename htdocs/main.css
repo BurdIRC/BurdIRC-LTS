@@ -519,6 +519,7 @@ div#miniframe{
     z-index: 90;
     background:rgba(0,0,0,0.5);
     display:none;
+    backdrop-filter: blur(5px);
 }
 iframe#mini{
     position: absolute;
