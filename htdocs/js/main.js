@@ -546,7 +546,7 @@ window.addEventListener('message', function(e) {
 
 const removeHTML = function(e){
     if(e==undefined) return "";
-    return e.replace(/\&/g, "&amp;").replace(/\</g, "&lt;");
+    return e.replace(/\&/g, "&amp;").replace(/\</g, "&lt;").replace(/\$/g, "&#36;");
 }
 
 const linkify = function(e) {
