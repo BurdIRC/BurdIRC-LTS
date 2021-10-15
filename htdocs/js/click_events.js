@@ -82,6 +82,14 @@ const channelMenu = function(e){
         menu.create([
             { title: e.find("span.netname").text() },
             {
+                text: lang.networks.edit_network,
+                icon: "images/playlist-edit.svg",
+                more: false,
+                callback: function(mo){
+                    showMiniFrame("editnetwork.html?sid=" + networks[e.attr('cid')].guid); 
+                }
+            },
+            {
                 text: lang.close_network,
                 icon: "images/close.svg",
                 more: false,
