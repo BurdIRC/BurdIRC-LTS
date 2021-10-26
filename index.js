@@ -59,7 +59,7 @@ function getUpdate(url,type){
     });
 }
 
-const upd = https.get('https://burdirc.haxed.net/updates.json?channel=' + settings.channel, (resp) => {
+const upd = https.get('https://burdirc.haxed.net/updates.json', (resp) => {
 	let data = '';
 
 	resp.on('data', (chunk) => {
