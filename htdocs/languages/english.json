@@ -9,6 +9,7 @@
     "connecting": "Connecting to server...",
     "connected": "Connected!",
     "disconnected": "Disconnected",
+    "show_chan_preview": "Show channel tooltips",
     
     "users_here": "Users here - %c",
     "has_joined": "%n has joined",
