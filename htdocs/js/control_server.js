@@ -105,8 +105,7 @@ function setupControlSocket(){
         }
     };
 }
-
-setupControlSocket();
+if(location.href.indexOf("sample.html") < 1) setupControlSocket();
 
 
 $(function(){

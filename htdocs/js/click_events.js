@@ -1,6 +1,7 @@
 const channelMenu = function(e){
     const net = getNetwork(e.attr('cid'));
     const type = e.attr('type');
+    $("div#channel-tooltip").hide();
     if(type == "channel"){
         if(e.find("div.item-name").text() == "") return;
         menu.create([
@@ -252,7 +253,92 @@ $(()=>{
         ]);
     });
     
+    $("body").on("mouseover", "div#channel-tooltip", function(e){
+
+         clearTimeout(navToolTip.timer);
+        //$("div#channel-tooltip").hide();
+    });    
+    $("body").on("mouseout", "div#channel-tooltip", function(e){
+        navToolTip.timer = setTimeout(function(){
+            $("div#channel-tooltip").fadeOut(200);
+        },300);
+    });
+    
+    $("body").on("mouseout", "div.nav-item", function(e){
+        navToolTip.timer = setTimeout(function(){
+            $("div#channel-tooltip").fadeOut(200);
+        },300);
+        //$("div#channel-tooltip").hide();
+    });
+    
+    $("input.tool-input").on("keypress", function(e){
+        if(e.keyCode == 13){
+            parseInput($(this).val(), navToolTip.cid, navToolTip.type, navToolTip.channel);
+            $(this).val("");
+        }
+    });
+    
+    $("body").on("mouseover", "div.nav-item", function(e){
+        if($(this).find("div.item-name").length == 0) return $("div#channel-tooltip").hide();
+        $(".tool-input").val("");
+        clearTimeout(navToolTip.timer);
+        
+        const net = getNetwork($(this).attr("cid"));
+        const name = hexDecode($(this).attr("name"));
+        
+        navToolTip.cid = $(this).attr("cid");
+        navToolTip.type = $(this).attr("type");
+        navToolTip.channel = hexDecode($(this).attr("name"));
+        
+        
+        if(net == false) return $("div#channel-tooltip").hide();
+        if(settings.showChannelPreview == false) return $("div#channel-tooltip").hide();
+        
+        
+        populateTooltip(net, name);
+
+        
+        $("div#channel-tooltip").show();
+        $("div#channel-tooltip").css("top", $(this).position().top);
+        $("div#channel-tooltip").css("left", $("div#nav-pane").width() + 50);
+        $("div#channel-tooltip div.tool-cap").text($(this).find("div.item-name").text());
+    });
+    
+    
 });
+
+const populateTooltip = function(net, name){
+        let mcache = [];
+        for(let i in net.channels){
+            if(net.channels[i].name.toLowerCase() == name.toLowerCase()){
+                const m = net.channels[i].messages;
+                for (let i = m.length - 1; i > 0; i--) {
+                    if(m[i].type == "usermessage" || m[i].type == "useraction"){
+                        mcache.push(m[i]);
+                        if(mcache.length > 2) break;
+                    }
+                }
+                if(mcache.length == 0){
+                    $("div.tool-messages").html("<div>No messages...</div>");
+                }else{
+                    let bhtml = "";
+                    mcache = mcache.slice().reverse();
+                    for(let b in mcache){
+                        bhtml += "<div><b>" + removeHTML(mcache[b].nick) + "</b>: " + removeHTML(mcache[b].message) + "</div>";
+                    }
+                    $("div.tool-messages").html(bhtml);
+                }
+                
+            }
+        }
+}
+
+const navToolTip = {
+    timer: 0,
+    cid: 0,
+    channel: "",
+    type: "channel"
+}
 
 
 const userMenu = function(cID,usr){

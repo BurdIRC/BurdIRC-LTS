@@ -16,7 +16,7 @@ const settings = {
     "animation": 300,
     "maxHistory": 150,
     "mute": false,
-    
+    "showChannelPreview": true,
     "showTimestamps": true,
     "showUnread": true,
     "showEmojis": true,

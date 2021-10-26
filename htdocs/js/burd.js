@@ -101,6 +101,7 @@ class IRC{
             name: "CONNECTED",
             message: "Connection to the backend has been restored"
         });
+        this.sendData("PING :RUALIVE??");
     }
     
     addToAll(message){

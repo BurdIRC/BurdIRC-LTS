@@ -407,18 +407,36 @@ div#my-nick{
 }
 div#input-area{
     background: var(--input-bg);
-    flex-grow: 1;
+    display: flex;
     height: 30px;
     margin-top: 7px;
     border: 1px solid var(--border-color);
     border-radius: 5px;
+    width:100%;
 }
 input#input{
     padding:5px;
     background:transparent;
     border:none;
-    width:calc(100% - 80px);
+    flex-grow:1;
 }
+
+div.input-button{
+    height:30px;
+    width:30px;
+    background: var(--emoji-icon);
+    background-size:23px;
+    background-position:center center;
+    background-repeat:no-repeat;
+    float:right;
+    opacity:0.5;
+    cursor:pointer;
+}
+div.input-button:hover{
+    opacity:1;
+}
+
+
 div#emoji{
     height:30px;
     width:30px;
@@ -674,4 +692,56 @@ img.inline-media{
 
 span.bracket{
     font-size:0px;
+}
+
+div#channel-tooltip{
+    position:absolute;
+    min-width:200px;
+    max-width:500px;
+    z-index:5;
+    color:black;
+    font-size:12px;
+    left:300px;
+    top:95px;
+    background:white;
+    border:1px solid black;
+    border-radius:5px;
+    display:none;
+}
+div#tool-text{
+    padding:5px;
+    float:left;
+    width: calc(100% - 25px);
+
+}
+div#tool-text div{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+div.left-arrow{
+    width:13px;
+    height:15px;
+    background:url(images/diamond.png) no-repeat;
+    background-position:0px 0px;
+    float:left;
+    position:relative;
+    left:-13px;
+    top:5px;
+}
+input.tool-input{
+    font-size:12px;
+    color:black;
+    margin-top:5px;
+    width: calc(100% - 1px);
+    border:1px solid #0D3C55;
+    color:#0D3C55;
+    border-radius:5px;
+}
+
+div.tool-cap{
+    font-size:15px;
+    font-weight:bold;
+    color:#1c4683;
+    border-bottom:1px solid #9ea3ab;
 }

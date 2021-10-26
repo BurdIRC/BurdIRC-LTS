@@ -3,19 +3,23 @@
         <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&amp;display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100;0,300;0,500;1,700&amp;display=swap" rel="stylesheet">
         <link href="css/menu.css" rel="stylesheet">
+		<link href="main.css" rel="stylesheet">
         
-        <link rel="icon" href="/icons/icon.ico"><!-- 32×32 -->
-        <link rel="apple-touch-icon" href="/icons/512.png"><!-- 180×180 -->
+        <link id="theme" href="themes/default.css" rel="stylesheet">
+
+        <link rel="icon" href="/icons/icon.ico">
+        <link rel="apple-touch-icon" href="/icons/512.png">
         <link rel="manifest" href="/manifest.json">
         
-        <title>Burd IRC 1.0.3 - ##foxx</title>
+        <title>BurdIRC 1.0.9 - ##defocus</title>
         
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+        
+        <script src="js/jquery.min.js"></script>
         <script src="js/main.js"></script>
         <script src="js/key_events.js"></script>
         <script src="js/click_events.js"></script>
         <script src="js/enum.js"></script>
-        <script src="js/control_server.js"></script>
         <script src="js/burd.js"></script>
         <script src="js/gui.js"></script>
         <script src="js/input_parse.js"></script>
@@ -23,659 +27,61 @@
         <script src="js/ignore.js"></script>
         <script src="js/usercommands.js"></script>
 
+        <script>if (window.module) module = window.module;</script>
 
         <style>
-            :root {
-              --background-color: #0D1117;
-              --nav-background: #161B22;
-              --border-color: #30363D;
-              --nav-item-selected-bg: #344154;
-              --nav-count-bg: #1F6FEB;
-              --nav-count-color: #FFFFFF;
-              --nav-width: 240px;
-              --action-text-color: #fbcaec;
-              
-              --userlist-width:230px;
-              --userlist-bg: #161B22;
-              
-              --input-bg: #070A10;
-              
-              --dark-text: #BBBDC1;
-              --light-text: #C9D1D9;
-              
-              --icon-off: "BBBDC1";
-              
-              --nav-active: #88d882;
-              --nav-idle: #6c7d94;
-              
-              --link-color: #96caff;
-              --link-hover-color: #ffffff;
-              
-              --menubar-width: 32px;
-              --menubar-background:#0d1117;
-              
-
-              color-scheme: dark;
-            }
-            
-            ::-webkit-scrollbar {
-                height: 12px;
-                width: 12px;
-                background: #0b0e13;
-            }
-
-            ::-webkit-scrollbar-thumb {
-                background: #333e4e;
-                -webkit-border-radius: 1ex;
-                -webkit-box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.75);
-            }
-
-            ::-webkit-scrollbar-corner {
-                background: #000;
-            }
-            
-            
-            div#app{
-                height:100%;
-                width:100%;
-                position:relative;
-            }
-
-            
-            body,html{
-                background:var(--background-color);
-                padding:0;
-                margin:0;
-                height:100%;
-                width:100%;
-                color:var(--light-text);
-                font-family: 'Open Sans', sans-serif;
-                font-size:20px;
-                image-rendering: -webkit-optimize-contrast;
-                overflow:hidden;
-            }
-            div#nav-pane{
-                width:var(--nav-width);
-                height:calc(100%);
-                background:var(--nav-background);
-                border-right:1px solid var(--border-color);
-                float:left;
-                overflow-y: auto;
-            }
-            div.nav-item{
-                font-size:0.8em;
-                padding:0.2em;
-                padding-left:1.5em;
-                color:var(--dark-text);
-                position:relative;
-            }
-            div.net-title{
-                padding:0.2em;
-                background:url('/images/white/chevron-down.svg');
-                background-size:1.2em;
-                background-position:2px center;
-                background-repeat:no-repeat;
-                padding-left:1.3em;
-                font-size:1em;
-            }
-
-            div.net-title:hover{
-                color:var(--light-text);
-            }
-            div.nav-item:hover{
-                background-color:var(--nav-item-selected-bg);
-                color:var(--light-text);
-                cursor:pointer;
-            }
-            div.channel{
-
-            }
-            div.selected-item{
-                background-color:var(--nav-item-selected-bg);
-                color:var(--light-text);
-            }
-            div.item-name{
-                float:left;
-            }
-            div.item-count{
-                float: right;
-                background: var(--nav-count-bg);
-                width: 1.8em;
-                padding-top: 1px;
-                color: var(--nav-count-color);
-                text-align: center;
-                font-size: 12px;
-                margin-top: 3px;
-                border-radius: 5px;
-            }
-            div.item-menu{
-                float:right;
-                width:1.6em;
-                background: url('/images/white/dots-vertical.svg');
-                background-size:15px;
-                background-position:center center;
-                background-repeat:no-repeat;
-                display:none;
-            }
-            div.item-status{
-                float:right;
-                width:1.6em;
-                background: url('/images/white/circle.svg&color=00d874');
-                background-size:15px;
-                background-position:center center;
-                background-repeat:no-repeat;
-                position:absolute;
-                left:0px;
-            }
-            div.item-menu:hover{
-                background-size:20px;
-            }
-            div.clear{
-                height:0px;
-                clear:both;
-            }
-            div.nav-item:hover div.item-count{
-                display:none;
-            }
-            div.nav-item:hover div.item-menu{
-                display:block;
-            }
-            div.selected-item div.item-count{
-                display:none;
-            }
-            
-            div#chan{
-                float:right;
-                width:calc(100% - var(--nav-width) - var(--menubar-width) - 5px);
-                display:none;
-            }
-            
-            
-            div#users{
-                float:right;
-                width:var(--userlist-width);
-                height:100%;
-                border-left:1px solid var(--border-color);
-                background:var(--userlist-bg);
-            }
-            
-            div#chat{
-                float:left;
-                width: calc(100% - var(--userlist-width) - 5px);
-                height:100%;
-            }
-            
-            div#channel-meta{
-                color: var(--light-text);
-                border-bottom:1px solid var(--border-color);
-                height: 70px;
-            }
-            div#channel-topic{
-                font-size:15px;
-                color: var(--dark-text);
-                overflow: hidden;
-                height: 40px;
-            }
-            div#chat-area{
-                border-bottom:1px solid var(--border-color);
-                height: calc(100% - 120px);
-                overflow-x: hidden;
-                overflow-y: auto;
-            }
-            div#chat-input{
-                height:40px;
-                display: flex;
-            }
-            input{
-                color:white;
-                font-family: 'Open Sans', sans-serif;
-                font-size:17px;
-                border:1px solid var(--border-color);
-                background: var(--input-background);
-                outline: none;
-            }
-            
-            div.chat-message{
-                padding:5px;
-            }
-            div.userimg{
-                background:#7950E9;
-                padding:10px;
-                float:left;
-                border-radius:50%;
-                margin-right:10px;
-                font-size:17px;
-            }
-            div.userinfo{
-                font-size:15px;
-                font-weight:bold;
-                width:150px;
-                text-align:right;
-                float:left;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-            div.message{
-                font-size:15px;
-                padding-left:10px;
-                float:left;
-                width:calc(100% - 230px);
-                white-space: pre-wrap;
-                word-wrap: break-word;
-                font-weight: 300;
-            }
-            div.messagedate{
-                font-size:12px;
-                font-weight:normal;
-                padding-top:3px;
-                color: var(--dark-text);
-                float:right;
-            }
-            div#user-count{
-                text-align:center;
-                font-size:17px;
-                border-bottom:1px solid var(--border-color);
-            }
-            div#userlist{
-                font-size:17px;
-                height:calc(100% - 30px);
-                overflow-y: auto;
-            }
-
-            div.user{
-                padding:5px;
-                padding-top:0;
-                padding-bottom:3px;
-                font-size:15px;
-                position:relative;
-                
-            }
-            div.luser{
-                padding-top:3px;
-                float:left;
-            }
-            div.lflags{
-                padding-top:3px;
-                float:right;
-            }
-            div.user-status{
-                height:16px;
-                width:16px;
-                float:left;
-                margin-top: 5px;
-                margin-right: 5px;
-                top:0;
-                background: url('data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7');
-                background-size:15px;
-                background-position:center center;
-                background-repeat:no-repeat;
-            }
-            
-            div.nav-item div.user-status{
-                position:absolute;
-                float:none;
-                left:7px;
-            }
-            
-
-            
-            img.chatimg{
-                max-width:400px;
-                max-height:400px;
-                border:5px solid #606570;
-                background:#606570;
-            }
-            
-            div.chat-info{
-                font-size:15px;
-                
-            }
-            div.chat-info div.message{
-                font-style:italic;
-            }
-            
-            div.chat-info div.userinfo{
-                background: url('/images/white/arrow-right.svg');
-                background-size:15px;
-                background-position:center right;
-                background-repeat:no-repeat;
-            }
-            
-            div.whois-info div.userinfo{
-                background: url('/images/white/account.svg');
-                background-size:15px;
-                background-position:center right;
-                background-repeat:no-repeat;
-            }            
-            div.whois-info div.message{
-                font-style: normal;
-            }
-            
-            div.info-out div.userinfo{
-                background-image: url('/images/white/arrow-left.svg');
-            }            
-            
-            div.info-action div.userinfo{
-                background-image: url('/images/white/alpha-a-circle.svg');
-            }
-            div.info-action{
-                color:var(--action-text-color);
-            }
-            
-            div.item-count[num='0']{
-                display:none;
-            }
-            
-            div.no-userlist div#users{
-                display:none;
-                width:1px;
-            }
-            div.no-userlist div#chat{
-                width: calc(100% - 5px);
-            }
-            
-            a{
-                color:var(--link-color);
-            }            
-            a:hover{
-                color:var(--link-hover-color);
-            }
-            div.away div.user-status{
-                background-image: url('/images/white/idle.svg');
-            }
-            div.away{
-                font-style:italic;
-            }
-            
-            div#userlist div.user:hover{
-                background-color: var(--nav-item-selected-bg);
-                color: var(--light-text);
-                cursor: pointer;
-            }
-            div#my-nick{
-                line-height: 2.5em;
-                font-size: 17px;
-                /* padding-right: 5px; */
-                cursor: pointer;
-                padding: 5px;
-                padding-top: 1px;
-            }
-            div#input-area{
-                background: var(--input-bg);
-                flex-grow: 1;
-                height: 30px;
-                margin-top: 7px;
-                border: 1px solid var(--border-color);
-                border-radius: 5px;
-            }
-            input#input{
-                padding:5px;
-                background:transparent;
-                border:none;
-                width:calc(100% - 80px);
-            }
-            div#emoji{
-                height:30px;
-                width:30px;
-                background: url('/images/white/emoticon-excited-outline.svg');
-                background-size:23px;
-                background-position:center center;
-                background-repeat:no-repeat;
-                float:right;
-                opacity:0.5;
-                cursor:pointer;
-            }
-            div#emoji:hover{
-                opacity:1;
-                
-            }
-            div#upload{
-                height:30px;
-                width:30px;
-                background: url('/images/white/upload.svg');
-                background-size:23px;
-                background-position:center center;
-                background-repeat:no-repeat;
-                float:right;
-                opacity:0.5;
-                cursor:pointer;
-            }
-            div#upload:hover{
-                opacity:1;
-                
-            }
-            #file{
-                display:none;
-            }
-            div#app-menu{
-                width:var(--nav-width);
-                height:44px;
-                background:var(--nav-background);
-                border-right:1px solid var(--border-color);
-                border-top:1px solid var(--border-color);
-                position:absolute;
-                top: calc(100% - 49px);
-                padding-top:10px;
-                display:none;
-                display:none;
-            }
-
-            div.appicon{
-                height:30px;
-                width:30px;
-                background: url('/images/white/cog.svg');
-                background-size:23px;
-                background-position:center center;
-                background-repeat:no-repeat;
-                opacity:0.7;
-                cursor:pointer;
-                position: absolute;
-                bottom: 5px;
-            }
-            div#add-network{
-                background-image: url('/images/white/plus-thick.svg');
-            }
-            div#nav-collapse{
-                background-image: url('/images/white/arrow-collapse-left.svg');
-            }
-            div.appicon:hover{
-                opacity:1;
-            }
-            
-            div#loader{
-                height:130px;
-                width:96px;
-                position:absolute;
-                background: url('/images/white/bird-cells.svg');
-                background-size:1000px;
-                background-position:0px -0px;
-                background-repeat:no-repeat;
-                background-position-x:100px;
-                left:calc(100% / 2 - 20px);
-                display:none;
-                z-index:100;
-            }
-            iframe#fram{
-                border:0;
-                padding:0;
-                margin:0;
-                width:100%;
-                height:100%;
-                z-index:50;
-                display:none;
-                position: absolute;
-            }
-            div#miniframe{
-                height: 100%;
-                width: 100%;
-                position: absolute;
-                top: 0;
-                left: 0;
-                z-index: 90;
-                background:rgba(0,0,0,0.5);
-                display:none;
-            }
-            iframe#mini{
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                height: 550px;
-                width: 400px;
-                margin-right: -50%;
-                z-index:91;
-                transform: translate(-50%, -50%);
-                border-radius: 10px;
-                border:0;
-                margin:0;
-                padding:0;
-                display:none;
-            }
-            img.emoji{
-                width:25px;
-            }
-            div.emojimessage img.emoji{
-                width:48px;
-            }
-            div.hasemoji div.userinfo{
-                padding-top: 7px;
-            }
-            div#emoji-selector{
-                background: var(--nav-background);
-                width: 400px;
-                height: 255px;
-                left: calc(100% - 670px);
-                top: calc(100% - 310px);
-                position: absolute;
-                z-index: 5;
-                border-radius: 10px;
-                border: 1px solid var(--border-color);
-                font-size:17px;
-                display:none;
-            }
-            div.close{
-                height: 20px;
-                width: 20px;
-                background: url(/images/white/close.svg);
-                background-size: 20px;
-                background-position: center center;
-                background-repeat: no-repeat;
-                opacity: 0.6;
-                cursor: pointer;
-                float:right;
-                margin-top: 3px;
-                margin-right: 5px;
-            }
-            div.close:hover{
-                opacity:1;
-            }
-            div#emoji-top{
-                height:30px;
-            }
-            
-            input#esearch{
-                font-size:15px;
-                float:left;
-                border-radius: 5px;
-                margin-top: 3px;
-                margin-left: 5px;
-                width:150px;
-            }
-            div#emoji-content{
-                height:210px;
-                clear:both;
-                padding:5px;
-                overflow-y:auto;
-            }
-            img.semoji{
-                width:32px;
-                height:32px;
-                margin:5px;
-            }
-            img.semoji{
-                cursor:pointer;
-            }
-            
-            div#menubar{
-                background:var(--menubar-background);
-                float:left;
-                height:100%;
-                width:var(--menubar-width);
-                position: relative;
-                border-right: 1px solid var(--border-color);
-            }
-            
-            div.alert{
-                background-image: url(/images/white/exclamation-thick.svg);
-                background-size: 1em;
-                background-position: 2px center;
-                background-repeat: no-repeat;
-            }
-            audio{
-                display:none;
-            }
-            
-            div.highlighted{
-                background:#161b22;
-                border-bottom: 1px solid #333c48;
-            }
-            
-            div.bell{
-                background-image: url(/images/white/bell-ring.svg);
-                background-size: 1em;
-                background-position: 5px center;
-                background-repeat: no-repeat;
-            }
-            
-            div.messageuser{
-                cursor:pointer;
-            }
-            
-            div#banners{
-                position:absolute;
-                top:0;
-                z-index:1;
-                width:500px;
-                left:50%;
-                transform: translate(-50%);
-                font-size:15px;
-                color:black;
-            }
-            
-            div.banner{
-                background:white;
-                padding:5px;
-                color:#3844c7;
-                border-top:1px solid #3844c7;
-                display:none;
-            }
-            
-            div.button{
-                float:right;
-                font-weight:700;
-                margin-left:10px;
-                cursor:pointer;
-                
-            }
-            div.button:hover{
-                text-decoration:underline;
-            }
-            
-            img.inline-media{
-                max-width:300px;
-                max-height:300px;
-                padding:10px;
-                padding-top:0;
-            }
 
         </style>
         <script>
-        
+            const isElectron = function() {
+                // Renderer process
+                if (typeof window !== 'undefined' && typeof window.process === 'object' && window.process.type === 'renderer') {
+                    return true;
+                }
 
+                // Main process
+                if (typeof process !== 'undefined' && typeof process.versions === 'object' && !!process.versions.electron) {
+                    return true;
+                }
+
+                // Detect the user agent when the `nodeIntegration` option is set to true
+                if (typeof navigator === 'object' && typeof navigator.userAgent === 'string' && navigator.userAgent.indexOf('Electron') >= 0) {
+                    return true;
+                }
+
+                return false;
+            }
+        
+        
+            const jq = document.createElement('script');
+            if(isElectron()){
+                jq.src = "js/control_server_electron.js";
+            }else{
+                jq.src = "js/control_server.js";
+            }
+            $("head")[0].appendChild(jq);
+
+            
+            
+            
+            $.getJSON("sample.json", function(e){
+                networks.push(e[1])
+            });
 
         </script>
     </head>
     <body>
+        <div id="channel-tooltip">
+            <div class="left-arrow">&nbsp;</div>
+            <div id="tool-text">
+                <div class="tool-cap">##foxx</div>
+                <div class="tool-messages">
+                    <div>No messages...</div>
+                </div>
+                <div><input type="text" class="tool-input" placeholder="Text to send..."></div>
+            </div>
+            <div class="clear">&nbsp;</div>
+        </div>
         <div id="banners">
         </div>
         <div id="loader" style="display: none;">
@@ -739,17 +145,41 @@
                     </div>
                     <div class="channels" cid="1">
                     
-                <div class="channel nav-item" cid="1" name="002300230063006800610074" type="channel">
+                <div class="channel nav-item" cid="1" name="002300230063006f006f006b0069006e0067" type="channel">
                     <div class="user-status">&nbsp;</div>
-                    <div class="item-name">##chat</div>
+                    <div class="item-name">##cooking</div>
                     <div class="item-count" num="0">0</div>
                     <div class="item-menu">&nbsp;</div>
                     <div class="clear">&nbsp;</div>
                 </div>
         
-                <div class="channel nav-item" cid="1" name="002300230063006f006f006b0069006e0067" type="channel">
+                <div class="channel nav-item selected-item" cid="1" name="00230023006400650066006f006300750073" type="channel">
                     <div class="user-status">&nbsp;</div>
-                    <div class="item-name">##cooking</div>
+                    <div class="item-name">##defocus</div>
+                    <div class="item-count" num="0">0</div>
+                    <div class="item-menu">&nbsp;</div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="channel nav-item" cid="1" name="002300230066006f00780078" type="channel">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="item-name">##foxx</div>
+                    <div class="item-count" num="1">1</div>
+                    <div class="item-menu">&nbsp;</div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="channel nav-item" cid="1" name="0023002300660075007200720079" type="channel">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="item-name">##furry</div>
+                    <div class="item-count" num="0">0</div>
+                    <div class="item-menu">&nbsp;</div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="channel nav-item" cid="1" name="0023002300670065006e006500720061006c" type="channel">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="item-name">##general</div>
                     <div class="item-count" num="0">0</div>
                     <div class="item-menu">&nbsp;</div>
                     <div class="clear">&nbsp;</div>
@@ -766,7 +196,7 @@
                 <div class="channel nav-item" cid="1" name="00230023006c006f00670063006100620069006e" type="channel">
                     <div class="user-status">&nbsp;</div>
                     <div class="item-name">##logcabin</div>
-                    <div class="item-count" num="0">0</div>
+                    <div class="item-count" num="1">1</div>
                     <div class="item-menu">&nbsp;</div>
                     <div class="clear">&nbsp;</div>
                 </div>
@@ -782,38 +212,38 @@
                 <div class="channel nav-item" cid="1" name="0023006c00690062006500720061" type="channel">
                     <div class="user-status">&nbsp;</div>
                     <div class="item-name">#libera</div>
+                    <div class="item-count" num="16">16</div>
+                    <div class="item-menu">&nbsp;</div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="channel nav-item" cid="1" name="002300770069006e0064006f00770073" type="channel">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="item-name">#windows</div>
                     <div class="item-count" num="0">0</div>
                     <div class="item-menu">&nbsp;</div>
                     <div class="clear">&nbsp;</div>
                 </div>
         
-                <div class="channel nav-item" cid="1" name="0023006c00690062006500720061002d006f006600660074006f007000690063" type="channel">
+                <div class="channel nav-item" cid="1" name="0023007700650062007300650063" type="channel">
                     <div class="user-status">&nbsp;</div>
-                    <div class="item-name">#libera-offtopic</div>
+                    <div class="item-name">#websec</div>
                     <div class="item-count" num="0">0</div>
                     <div class="item-menu">&nbsp;</div>
                     <div class="clear">&nbsp;</div>
                 </div>
         
-                <div class="channel nav-item" cid="1" name="00230023007200650061006c0070006f006c00690074006900630073" type="channel">
+                <div class="channel nav-item" cid="1" name="00230023006300680061007400740069006e0067" type="channel">
                     <div class="user-status">&nbsp;</div>
-                    <div class="item-name">##realpolitics</div>
+                    <div class="item-name">##chatting</div>
                     <div class="item-count" num="0">0</div>
                     <div class="item-menu">&nbsp;</div>
                     <div class="clear">&nbsp;</div>
                 </div>
         
-                <div class="channel nav-item selected-item" cid="1" name="002300230066006f00780078" type="channel">
+                <div class="channel nav-item" cid="1" name="002300230074006800650064006500650070" type="channel">
                     <div class="user-status">&nbsp;</div>
-                    <div class="item-name">##foxx</div>
-                    <div class="item-count" num="0">0</div>
-                    <div class="item-menu">&nbsp;</div>
-                    <div class="clear">&nbsp;</div>
-                </div>
-        
-                <div class="channel nav-item" cid="1" name="00230023006400650066006f006300750073" type="channel">
-                    <div class="user-status">&nbsp;</div>
-                    <div class="item-name">##defocus</div>
+                    <div class="item-name">##thedeep</div>
                     <div class="item-count" num="0">0</div>
                     <div class="item-menu">&nbsp;</div>
                     <div class="clear">&nbsp;</div>
@@ -826,7 +256,7 @@
             
             <div id="chan" class="" style="display: block;">
                 <div id="users">
-                    <div id="user-count">Users here - 17</div>
+                    <div id="user-count">Users here - 117</div>
                     <div id="userlist">
                 <div class="user _state_" nick="004200610072006b">
                     <div class="user-status">&nbsp;</div>
@@ -835,65 +265,219 @@
                     <div class="clear">&nbsp;</div>
                 </div>
         
-                <div class="user _state_" nick="0070006f007200740061006c007200610074">
+                <div class="user _state_" nick="006400750063006b0067006f006f00730065">
                     <div class="user-status">&nbsp;</div>
-                    <div class="luser" style="color:#CDDEBB">portalrat</div>
+                    <div class="luser" style="color:#CAABFC">duckgoose</div>
                     <div class="lflags">@+</div>
                     <div class="clear">&nbsp;</div>
                 </div>
         
-                <div class="user _state_" nick="004300680061006e0053006500720076">
+                <div class="user _state_" nick="00610073006400750063006b">
                     <div class="user-status">&nbsp;</div>
-                    <div class="luser" style="color:#BECFDB">ChanServ</div>
+                    <div class="luser" style="color:#ACCCCB">asduck</div>
                     <div class="lflags">@</div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0063006800610074">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#EFABBB">chat</div>
+                    <div class="lflags">+</div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="006d007700730062">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BFADBE">mwsb</div>
+                    <div class="lflags">+</div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="006e0062">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BFEACF">nb</div>
+                    <div class="lflags">+</div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="006e006f0074005a00690067006700670079">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#DDACAA">notZigggy</div>
+                    <div class="lflags">+</div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0070006f007200740061006c007200610074">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#CDDEBB">portalrat</div>
+                    <div class="lflags">+</div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="005400680065005f005400610062006c00650074">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BDCDDE">The_Tablet</div>
+                    <div class="lflags">+</div>
                     <div class="clear">&nbsp;</div>
                 </div>
         
                 <div class="user _state_" nick="007a0079006d0065">
                     <div class="user-status">&nbsp;</div>
                     <div class="luser" style="color:#EFABBD">zyme</div>
-                    <div class="lflags">@</div>
-                    <div class="clear">&nbsp;</div>
-                </div>
-        
-                <div class="user _state_" nick="004400750063006b0042006f0074">
-                    <div class="user-status">&nbsp;</div>
-                    <div class="luser" style="color:#DAEBEB">DuckBot</div>
                     <div class="lflags">+</div>
                     <div class="clear">&nbsp;</div>
                 </div>
         
-                <div class="user _state_" nick="006400750063006b0067006f006f00730065">
+                <div class="user _state_" nick="005c">
                     <div class="user-status">&nbsp;</div>
-                    <div class="luser" style="color:#CAABFC">duckgoose</div>
-                    <div class="lflags">+</div>
+                    <div class="luser" style="color:#CCDCBC">\</div>
+                    <div class="lflags"></div>
                     <div class="clear">&nbsp;</div>
                 </div>
         
-                <div class="user _state_" nick="006600650072007200650074">
+                <div class="user _state_" nick="005c006d00530067">
                     <div class="user-status">&nbsp;</div>
-                    <div class="luser" style="color:#ABFACC">ferret</div>
-                    <div class="lflags">+</div>
+                    <div class="luser" style="color:#EEDCDD">\mSg</div>
+                    <div class="lflags"></div>
                     <div class="clear">&nbsp;</div>
                 </div>
         
-                <div class="user _state_" nick="004e006f0069007300790074006f006f0074">
+                <div class="user _state_" nick="005f00300078003100640033">
                     <div class="user-status">&nbsp;</div>
-                    <div class="luser" style="color:#CCDBDD">Noisytoot</div>
-                    <div class="lflags">+</div>
+                    <div class="luser" style="color:#CAEDAC">_0x1d3</div>
+                    <div class="lflags"></div>
                     <div class="clear">&nbsp;</div>
                 </div>
         
-                <div class="user _state_" nick="00740061006c006c006700750079">
+                <div class="user _state_" nick="0042007500740074006500720066006c0079005e">
                     <div class="user-status">&nbsp;</div>
-                    <div class="luser" style="color:#EBCEEB">tallguy</div>
-                    <div class="lflags">+</div>
+                    <div class="luser" style="color:#EBFECC">Butterfly^</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0041006400720061006e">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#FAFCAC">Adran</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0061006900720068006500610064">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BADCCD">airhead</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0061006e0064006500720073006f006e">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#DFBADC">anderson</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0061007100730064">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BCDDEB">aqsd</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="00610073007400720061">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#AEBFAC">astra</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0061007500640069006f0062006900720062">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#FABCBF">audiobirb</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0061007500640069006f0066007200650065007a0065">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BDACED">audiofreeze</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0061007a0069007a004c0049004700480054">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#ACEAAB">azizLIGHT</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="00620061006e0061006e0061">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BCAADE">banana</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="00620069006e005f006200610074">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#DCACBD">bin_bat</div>
+                    <div class="lflags"></div>
                     <div class="clear">&nbsp;</div>
                 </div>
         
                 <div class="user _state_" nick="0062006c006b007300680070">
                     <div class="user-status">&nbsp;</div>
                     <div class="luser" style="color:#FEACAD">blkshp</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0042006f00780075">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BFDEFC">Boxu</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="006200720062">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#DAFBBA">brb</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="00620075007a0065006c">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#FFCFDC">buzel</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0062007900730069006e">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BEFCAA">bysin</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0043006100730068006c0069006e">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BACADB">Cashlin</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="00630064">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#CAADAD">cd</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="00630068006900730065006c0066007500730065">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BEADDC">chiselfuse</div>
                     <div class="lflags"></div>
                     <div class="clear">&nbsp;</div>
                 </div>
@@ -905,6 +489,34 @@
                     <div class="clear">&nbsp;</div>
                 </div>
         
+                <div class="user _state_" nick="0043006f006d007000750074006500720054006500630068">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BCBAFC">ComputerTech</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0063006f007200770069006e">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BFFCCB">corwin</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="006400610072007300690065">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BCCADA">darsie</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="00640065006100740068003900310036">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BCBAED">death916</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
                 <div class="user _state_" nick="004400650074006500630074006900760065005400610063006f">
                     <div class="user-status">&nbsp;</div>
                     <div class="luser" style="color:#CBACDC">DetectiveTaco</div>
@@ -912,9 +524,338 @@
                     <div class="clear">&nbsp;</div>
                 </div>
         
-                <div class="user _state_" nick="0046006c006900740073">
+                <div class="user _state_" nick="00440072004e00690063006b00340032">
                     <div class="user-status">&nbsp;</div>
-                    <div class="luser" style="color:#ADDBDC">Flits</div>
+                    <div class="luser" style="color:#CCDECA">DrNick42</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0065006e006300680069005f">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#AFEDCB">enchi_</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0045006e00630072007900700074">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#FCABCF">Encrypt</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0045007200720061006e007400450067006f">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BEDCBF">ErrantEgo</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="004500780061">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BAEDBC">Exa</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="006600610072006e">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#DFBDCA">farn</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0066006100740061006c">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#CEADDB">fatal</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="00460065006e006e006500630043006f00640065">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#DDAAAA">FennecCode</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="006600650072007200650074">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#ABFACC">ferret</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0046004c004800650072006e0065">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BDBEAD">FLHerne</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0046006f00720069007400750073">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#CABEFB">Foritus</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="00460072006f006700670069006e0067003100300031">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BAFADD">Frogging101</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0047006500720075006c0061">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#DDFDAB">Gerula</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0047006f006c00640065006e004900760079">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#DDADAB">GoldenIvy</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="006700720075006d0062006c0065">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#CDBBDD">grumble</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="006800650078006c00650079">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#CEDCCD">hexley</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0068006d00690072002d">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#FAFAAD">hmir-</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="00690063007a00650072006f">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#FBDADA">iczero</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0069006d006d0069006200690073">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#DCFBCB">immibis</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0069006f0076006f00690064">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#DAADAC">iovoid</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="004a0061007a006f006e">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BDACEC">Jazon</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="006a006500730073">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BBEBFC">jess</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="006a00650073007300690063006100720061">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#ACDCFC">jessicara</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="006a00730074006f">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#DADDEC">jsto</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="006a00730074006f006b00650072">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#DEACFF">jstoker</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="004b006f0072006100670067">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#CBADAC">Koragg</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="006b007200610074006f007200340034">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BBBFDF">krator44</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="006c0065006f006e00610072006400750073">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#EBBBCC">leonardus</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="004c006900740042006f0074">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#FFBBED">LitBot</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="006c007500700069">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BAAADD">lupi</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="004c0058004700480054004e0058004e0047">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#DCABAF">LXGHTNXNG</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="004d0061006c0076006f006c0069006f">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BDBDCC">Malvolio</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="004d0065006c004d0061006c0069006b">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#DFCABA">MelMalik</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="004d006500740061004e006f00760061">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#FBBBFD">MetaNova</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="004e00610079">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#CDCDCC">Nay</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="006e00650070006500610074005f">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#CADEAA">nepeat_</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="006e00650074006d0061006e">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BCDDDE">netman</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="004e006f0069007300790074006f006f0074">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#CCDBDD">Noisytoot</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="006e006f0069007300790074006f006f0074005b0078005d">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#DADACC">noisytoot[x]</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="004e00530041">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#CCCBCF">NSA</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="006e00730068">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#EAFADA">nsh</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="004e00740068004400650067007200650065">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BCFDAA">NthDegree</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="006e0076007a">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#EAACFF">nvz</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="006f0068006e0078">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#DCBADD">ohnx</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="004f0076006500720043006f006400650072">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BDCAED">OverCoder</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="00500061006e0074006800650072">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#DBABEE">Panther</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0070006500650072">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#ECFCBC">peer</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0070006c00610063006500620030">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BBADCD">placeb0</div>
                     <div class="lflags"></div>
                     <div class="clear">&nbsp;</div>
                 </div>
@@ -926,9 +867,135 @@
                     <div class="clear">&nbsp;</div>
                 </div>
         
-                <div class="user _state_" nick="005400680065005f005400610062006c00650074">
+                <div class="user _state_" nick="005000750062006c006900630057006900660069">
                     <div class="user-status">&nbsp;</div>
-                    <div class="luser" style="color:#BDCDDE">The_Tablet</div>
+                    <div class="luser" style="color:#CBCFAB">PublicWifi</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="005200610064006f006e">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#CBDDDB">Radon</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0072006200650072">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#FBCAAE">rber</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="007200620072004800410055004e0054">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#CABDDE">rbrHAUNT</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="007200650064006c006500670069006f006e">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BAEDCD">redlegion</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0072006900660066002d004900520043">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#CACDFB">riff-IRC</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0052006f00650079">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BDECAB">Roey</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0072006f00770062006f0074">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BFFFCF">rowbot</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="007300610072006e006f006c0064">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BCFACC">sarnold</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="005300630061007200650053007100750069007200720065006c">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#DCBADC">ScareSquirrel</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0053006b0061006c00610072">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BCBBAB">Skalar</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0073006c006100760066006f0078">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#CECDAA">slavfox</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0073007500640030">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BBDCAB">sud0</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="00730075006a006500650074">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#AFBCAB">sujeet</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="00740061006c006c006700750079">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#EBCEEB">tallguy</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="00740062006f">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#DDBCAA">tbo</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="00740065007800740061">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BDBEDA">texta</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="005400680065004600610074006800650072004d0069006e0064">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#DFDCAE">TheFatherMind</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="00740069006e0073006f006c0064006900650072">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BDDCAB">tinsoldier</div>
                     <div class="lflags"></div>
                     <div class="clear">&nbsp;</div>
                 </div>
@@ -940,9 +1007,72 @@
                     <div class="clear">&nbsp;</div>
                 </div>
         
+                <div class="user _state_" nick="00740069006e0077006800690073006b006500720073">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#ADCBDD">tinwhiskers</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0054007200690065007300740065">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#FFEDFC">Trieste</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="00740072006f0067">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#FBFBCC">trog</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0056">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#CAEBEC">V</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="00560061006e0055006e0061006d00650064">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BBCABC">VanUnamed</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
                 <div class="user _state_" nick="00760065006e0075007300730061">
                     <div class="user-status">&nbsp;</div>
                     <div class="luser" style="color:#BEBCDB">venussa</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="00570061006e00640065007200650072">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BDADAB">Wanderer</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0057006500720065006d006f006e0074">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BDEECA">Weremont</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="00770068006900740065006c0069006e0065">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BFEEEF">whiteline</div>
+                    <div class="lflags"></div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="user _state_" nick="0077006f00640065006e0063006100660065">
+                    <div class="user-status">&nbsp;</div>
+                    <div class="luser" style="color:#BFDABB">wodencafe</div>
                     <div class="lflags"></div>
                     <div class="clear">&nbsp;</div>
                 </div>
@@ -950,61 +1080,87 @@
                 </div>
                 <div id="chat">
                     <div id="channel-meta">
-                        <div id="channel-name">##foxx</div>
-                        <div id="channel-topic" title="Save A Fox || A Fᵾɍɍɏ Group || Where is Time-Warp Banned? Check with our API: https://0x0.st/H0hB || ANTI MAKE IRC GREAT AGAIN || A Time-Goose and duckwarp Production">Save A Fox || A Fᵾɍɍɏ Group || Where is Time-Warp Banned? Check with our API: <a href="https://0x0.st/H0hB" target="_blank">https://0x0.st/H0hB</a> || ANTI MAKE IRC GREAT AGAIN || A Time-Goose and duckwarp Production</div>
+                        <div id="channel-name">##defocus</div>
+                        <div id="channel-topic" title="General chat channel. Focusing strictly prohibited. | Some people say we're gods, and maybe they're right. I'm not saying we're not gods. | comix: http://ws.comic.chat/##defocus | https://www.youtube.com/watch?v=7DkQl0XigvM | &amp;lt;kkcrow> https://i.imgur.com/8OGRLzk.jpg | In Search for the wholy COW | Death to Sandcats | remember to STAN DIAMOND HEAD">General chat channel. Focusing strictly prohibited. | Some people say we're gods, and maybe they're right. I'm not saying we're not gods. | comix: <a href="http://ws.comic.chat/##defocus" target="_blank">http://ws.comic.chat/##defocus</a> | <a href="https://www.youtube.com/watch?v=7DkQl0XigvM" target="_blank">https://www.youtube.com/watch?v=7DkQl0XigvM</a> | &lt;kkcrow&gt; <a href="https://i.imgur.com/8OGRLzk.jpg" target="_blank">https://i.imgur.com/8OGRLzk.jpg</a> | In Search for the wholy COW | Death to Sandcats | remember to STAN DIAMOND HEAD</div>
                     </div>
                     <div id="chat-area" tabindex="0">
                 <div class="chat-message chat-info ">
                     <div class="userinfo">&nbsp;</div>
-                    <div class="message">Now talking on "##foxx"</div>
-                    <div class="messagedate">8:16:46 PM</div>
+                    <div class="message">Now talking on "##defocus"</div>
+                    <div class="messagedate">7:30:06 PM</div>
                     <div class="clear">&nbsp;</div>
                 </div>
         
                 <div class="chat-message chat-info ">
                     <div class="userinfo">&nbsp;</div>
-                    <div class="message">Topic for "##foxx" is: Save A Fox || A Fᵾɍɍɏ Group || Where is Time-Warp Banned? Check with our API: <a href="https://0x0.st/H0hB" target="_blank">https://0x0.st/H0hB</a> || ANTI MAKE IRC GREAT AGAIN || A Time-Goose and duckwarp Production</div>
-                    <div class="messagedate">8:16:46 PM</div>
+                    <div class="message">Topic for "##defocus" is: General chat channel. Focusing strictly prohibited. | Some people say we're gods, and maybe they're right. I'm not saying we're not gods. | comix: <a href="http://ws.comic.chat/##defocus" target="_blank">http://ws.comic.chat/##defocus</a> | <a href="https://www.youtube.com/watch?v=7DkQl0XigvM" target="_blank">https://www.youtube.com/watch?v=7DkQl0XigvM</a> | &lt;kkcrow&gt; <a href="https://i.imgur.com/8OGRLzk.jpg" target="_blank">https://i.imgur.com/8OGRLzk.jpg</a> | In Search for the wholy COW | Death to Sandcats | remember to STAN DIAMOND HEAD</div>
+                    <div class="messagedate">7:30:06 PM</div>
                     <div class="clear">&nbsp;</div>
                 </div>
         
                 <div class="chat-message chat-info ">
                     <div class="userinfo">&nbsp;</div>
-                    <div class="message">Topic set by zyme on Sun Aug 22 2021</div>
-                    <div class="messagedate">8:16:46 PM</div>
+                    <div class="message">Topic set by The_Tablet on Mon Oct 11 2021</div>
+                    <div class="messagedate">7:30:06 PM</div>
                     <div class="clear">&nbsp;</div>
                 </div>
         
-                <div class="chat-message _emojic_ _highlight_" nick="002a002a002a">
-                    <div class="userinfo messageuser" style="color:#DCEABD">***</div>
-                    <div class="message">Buffer Playback...</div>
-                    <div class="messagedate">8:16:46 PM</div>
+                <div class="chat-message chat-info ">
+                    <div class="userinfo">&nbsp;</div>
+                    <div class="message"><b>admint__</b> has changed names to <b>Butterfly^</b></div>
+                    <div class="messagedate">7:30:45 PM</div>
                     <div class="clear">&nbsp;</div>
                 </div>
-                
+        
+                <div class="chat-message _emojic_ highlighted" nick="0061007500640069006f0066007200650065007a0065">
+                    <div class="userinfo messageuser" style="color:#BDACED"><span class="bracket">&lt;</span>audiofreeze<span class="bracket">&gt;&nbsp;</span></div>
+                    <div class="message">duckgoose: duck!</div>
+                    <div class="messagedate">7:32:46 PM</div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
                 <div class="chat-message _emojic_ _highlight_" nick="006400750063006b0067006f006f00730065">
-                    <div class="userinfo messageuser" style="color:#CAABFC">duckgoose</div>
-                    <div class="message">.bef</div>
-                    <div class="messagedate">8:19:21 PM</div>
+                    <div class="userinfo messageuser" style="color:#CAABFC"><span class="bracket">&lt;</span>duckgoose<span class="bracket">&gt;&nbsp;</span></div>
+                    <div class="message">audiofreeze </div>
+                    <div class="messagedate">7:32:56 PM</div>
                     <div class="clear">&nbsp;</div>
                 </div>
-                
+        
+                <div class="chat-message _emojic_ _highlight_" nick="0061007500640069006f0066007200650065007a0065">
+                    <div class="userinfo messageuser" style="color:#BDACED"><span class="bracket">&lt;</span>audiofreeze<span class="bracket">&gt;&nbsp;</span></div>
+                    <div class="message">i caught ferret trying to steal one of your eggs</div>
+                    <div class="messagedate">7:33:12 PM</div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
                 <div class="chat-message _emojic_ _highlight_" nick="006400750063006b0067006f006f00730065">
-                    <div class="userinfo messageuser" style="color:#CAABFC">duckgoose</div>
-
-                        <img src="https://controller.wtf/image.php?url=https://usercontent.irccloud-cdn.com/file/GMERpbGu/1631319406.JPG&width=400" class="inline-media">
-                    
-                    <div class="messagedate">8:19:21 PM</div>
+                    <div class="userinfo messageuser" style="color:#CAABFC"><span class="bracket">&lt;</span>duckgoose<span class="bracket">&gt;&nbsp;</span></div>
+                    <div class="message">:|</div>
+                    <div class="messagedate">7:33:19 PM</div>
                     <div class="clear">&nbsp;</div>
                 </div>
-
+        
+                <div class="chat-message _emojic_ _highlight_" nick="006400750063006b0067006f006f00730065">
+                    <div class="userinfo messageuser" style="color:#CAABFC"><span class="bracket">&lt;</span>duckgoose<span class="bracket">&gt;&nbsp;</span></div>
+                    <div class="message">did you call the cops</div>
+                    <div class="messagedate">7:33:26 PM</div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+        
+                <div class="chat-message _emojic_ _highlight_" nick="0061007500640069006f0066007200650065007a0065">
+                    <div class="userinfo messageuser" style="color:#BDACED"><span class="bracket">&lt;</span>audiofreeze<span class="bracket">&gt;&nbsp;</span></div>
+                    <div class="message">lol. ye</div>
+                    <div class="messagedate">7:33:56 PM</div>
+                    <div class="clear">&nbsp;</div>
+                </div>
         </div>
                     <div id="chat-input">
                         <div id="my-nick">duckgoose</div>
                         <div id="input-area">
-                            <input id="input" type="text">
+                            <input id="input" type="text" autocomplete="off">
                             <div id="emoji">&nbsp;</div>
                             <div id="upload">&nbsp;</div>
+                            <div class="input-button">&nbsp;</div>
                         </div>
                     </div>
                 </div>
@@ -1048,17 +1204,17 @@
         
         <template id="chat-msg">
                 <div class="chat-message _emojic_ _highlight_" nick="_ename_">
-                    <div class="userinfo messageuser" style="color:_color_">_name_</div>
+                    <div class="userinfo messageuser" style="color:_color_"><span class="bracket">&lt;</span>_name_<span class="bracket">&gt;&nbsp;</span></div>
                     <div class="message">_message_</div>
                     <div class="messagedate">_date_</div>
                     <div class="clear">&nbsp;</div>
                 </div>
-        </template>         
+        </template> 
         
         <template id="chat-media">
                 <div class="chat-message" nick="_ename_">
                     <div class="userinfo messageuser" style="color:_color_">_name_</div>
-                    <img src="https://controller.wtf/image.php?url=_media_&width=400" class="inline-media">
+                    <img src="https://controller.wtf/image.php?url=_media_&amp;width=400" class="inline-media" alt="loading..." onload="emojiLoaded();">
                     <div class="messagedate">_date_</div>
                     <div class="clear">&nbsp;</div>
                 </div>

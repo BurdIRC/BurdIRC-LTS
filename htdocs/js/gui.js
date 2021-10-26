@@ -36,6 +36,9 @@ const GUI = {
             if(e.cID == GUI.current.cID && e.type == GUI.current.type && e.name.toLowerCase() == GUI.current.name){
                 GUI.updateChannelMessages(e.cID, e.type, e.name);
             }
+            
+            populateTooltip(getNetwork(navToolTip.cid), navToolTip.channel);
+            
             if(e.message){
                 
                 if(e.message.highlight){
@@ -57,11 +60,11 @@ const GUI = {
                 if(e.message.type == "usermessage" || e.message.type == "useraction"){
                     if(e.cID == GUI.current.cID && e.name.toLowerCase() == GUI.current.name.toLowerCase()) return;
                     let read = parseInt($("div[name='" + hexEncode(e.name.toLowerCase()) + "'][cid='" + e.cID + "'] div.item-count").text());
-                    if(read == 99) return;
-                    if(settings.showUnread) read++;
                     
                     if(e.message.highlight) $("div[name='" + hexEncode(e.name.toLowerCase()) + "'][cid='" + e.cID + "']").addClass("bell");
                     
+                    if(read == 99) return;
+                    if(settings.showUnread) read++;
                     $("div[name='" + hexEncode(e.name.toLowerCase()) + "'][cid='" + e.cID + "'] div.item-count").attr("num", read).text(read);
                 }
             }

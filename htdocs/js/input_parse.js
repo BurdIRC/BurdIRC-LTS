@@ -33,7 +33,7 @@ const parseInput = (input, cID, type, channel)=>{
     const ubits = input.toUpperCase().split(" ");
     const _input = input.substr(bits[0].length + 1);
     const command = bits[0].substr(1);
-    const chanObj = net.getChannel(GUI.current.type, GUI.current.name);
+    const chanObj = net.getChannel(typ, chan);
     const ctcpChar = String.fromCharCode(1);
     
     
@@ -90,8 +90,8 @@ const parseInput = (input, cID, type, channel)=>{
     
     if(input.substr(0,2) == "//"){
         if(input.match(/nickserv/ig)!=null) return addInfo("Your message was not sent for security reasons. (Nickserv was detected in a // message)", "*");
-        net.sendData("PRIVMSG " + GUI.current.name + " :" + input.substr(1));
-        net.addChannelMessage(GUI.current.type, GUI.current.name, {
+        net.sendData("PRIVMSG " + chan + " :" + input.substr(1));
+        net.addChannelMessage(typ, chan, {
             type: "usermessage",
             nick: net.nick,
             mask: net.nick + "!~@~",
@@ -125,8 +125,8 @@ const parseInput = (input, cID, type, channel)=>{
                 for (let i = 0; i < banners.length; i++) {
                     tmpStr += "b";
                 }
-                addInfoOut("MODE " + GUI.current.name + " " + tmpStr + " " + banners.join(" "), "*");
-                net.sendData("MODE " + GUI.current.name + " " + tmpStr + " " + banners.join(" "));
+                addInfoOut("MODE " + chan + " " + tmpStr + " " + banners.join(" "), "*");
+                net.sendData("MODE " + chan + " " + tmpStr + " " + banners.join(" "));
                 break;
                 
             case "CLEAR":
@@ -135,7 +135,7 @@ const parseInput = (input, cID, type, channel)=>{
                 break;
                 
             case "CLOSE":
-                GUI.closeChannel(GUI.current.cID, GUI.current.type, GUI.current.name);
+                GUI.closeChannel(id, typ, chan);
                 break;
                 
             case "CTCP":
@@ -144,8 +144,8 @@ const parseInput = (input, cID, type, channel)=>{
                 break;
                 
             case "CYCLE":
-                net.sendData("PART " + GUI.current.name);
-                net.sendData("JOIN " + GUI.current.name);
+                net.sendData("PART " + chan);
+                net.sendData("JOIN " + chan);
                 break;
                 
             case "DEHOP":
@@ -156,8 +156,8 @@ const parseInput = (input, cID, type, channel)=>{
                 for (let i = 0; i < banners.length; i++) {
                     tmpStr += "h";
                 }
-                addInfoOut("MODE " + GUI.current.name + " " + tmpStr + " " + banners.join(" "), "*");
-                net.sendData("MODE " + GUI.current.name + " " + tmpStr + " " + banners.join(" "));
+                addInfoOut("MODE " + chan + " " + tmpStr + " " + banners.join(" "), "*");
+                net.sendData("MODE " + chan + " " + tmpStr + " " + banners.join(" "));
                 break;
 
             case "DEVOICE":
@@ -168,8 +168,8 @@ const parseInput = (input, cID, type, channel)=>{
                 for (let i = 0; i < banners.length; i++) {
                     tmpStr += "v";
                 }
-                addInfoOut("MODE " + GUI.current.name + " " + tmpStr + " " + banners.join(" "), "*");
-                net.sendData("MODE " + GUI.current.name + " " + tmpStr + " " + banners.join(" "));
+                addInfoOut("MODE " + chan + " " + tmpStr + " " + banners.join(" "), "*");
+                net.sendData("MODE " + chan + " " + tmpStr + " " + banners.join(" "));
                 break;
                
             case "ECHO":
@@ -190,8 +190,8 @@ const parseInput = (input, cID, type, channel)=>{
                 for (let i = 0; i < banners.length; i++) {
                     tmpStr += "h";
                 }
-                addInfoOut("MODE " + GUI.current.name + " " + tmpStr + " " + banners.join(" "), "*");
-                net.sendData("MODE " + GUI.current.name + " " + tmpStr + " " + banners.join(" "));
+                addInfoOut("MODE " + chan + " " + tmpStr + " " + banners.join(" "), "*");
+                net.sendData("MODE " + chan + " " + tmpStr + " " + banners.join(" "));
                 break;
                 
                 
@@ -227,9 +227,9 @@ const parseInput = (input, cID, type, channel)=>{
             case "KICK":
                 if(checkArgs(["string"])) return;
                 if(bits.length == 2){
-                    net.sendData("KICK " + GUI.current.name + " " + bits[1]);
+                    net.sendData("KICK " + chan + " " + bits[1]);
                 }else{
-                    net.sendData("KICK " + GUI.current.name + " " + bits[1] + " :" + _input.substr(bits[1].length + 1));
+                    net.sendData("KICK " + chan + " " + bits[1] + " :" + _input.substr(bits[1].length + 1));
                 }
                 addInfoOut("KICK " + bits[1], "*");
                 break;
@@ -239,11 +239,11 @@ const parseInput = (input, cID, type, channel)=>{
                 if(checkArgs(["string"])) return;
                 tmpStr = getMask(bits[1]);
                 if(bits.length == 2){
-                    net.sendData("MODE " + GUI.current.name + " +b " + tmpStr);
-                    net.sendData("KICK " + GUI.current.name + " " + bits[1]);
+                    net.sendData("MODE " + chan + " +b " + tmpStr);
+                    net.sendData("KICK " + chan + " " + bits[1]);
                 }else{
-                    net.sendData("MODE " + GUI.current.name + " +b " + tmpStr);
-                    net.sendData("KICK " + GUI.current.name + " " + bits[1] + " :" + _input.substr(bits[1].length + 1));
+                    net.sendData("MODE " + chan + " +b " + tmpStr);
+                    net.sendData("KICK " + chan + " " + bits[1] + " :" + _input.substr(bits[1].length + 1));
                 }
                 addInfoOut("KICKBAN " + bits[1], "*");
                 break;
@@ -255,7 +255,7 @@ const parseInput = (input, cID, type, channel)=>{
             case "ME":
             case "ACTION":
                 if(checkArgs(["string"])) return;
-                net.sendData("PRIVMSG " + GUI.current.name + " :" + ctcpChar + "ACTION " + _input + ctcpChar);
+                net.sendData("PRIVMSG " + chan + " :" + ctcpChar + "ACTION " + _input + ctcpChar);
                 net.addChannelMessage(typ, chan, {
                     type: "useraction",
                     nick: net.nick,
@@ -267,14 +267,14 @@ const parseInput = (input, cID, type, channel)=>{
             case "MODE":
             
                 if(bits.length == 1){
-                    net.sendData("MODE " + GUI.current.name);
+                    net.sendData("MODE " + chan);
                 }else{
                     if(bits[1].toLowerCase() == net.nick.toLowerCase()){
                         net.sendData("MODE " + _input);
                         addInfoOut("MODE " + _input, "*");
                     }else{
-                        net.sendData("MODE " + GUI.current.name + " " + _input);
-                        addInfoOut("MODE " + GUI.current.name + " " + _input, "*");
+                        net.sendData("MODE " + chan + " " + _input);
+                        addInfoOut("MODE " + chan + " " + _input, "*");
                     }
                 }
                 
@@ -290,7 +290,7 @@ const parseInput = (input, cID, type, channel)=>{
                 
             case "NAMES":
                 if(bits.length == 1){
-                    net.sendData("NAMES " + GUI.current.name);
+                    net.sendData("NAMES " + chan);
                 }else{
                     net.sendData("NAMES " + bits[1]);
                 }
@@ -306,14 +306,14 @@ const parseInput = (input, cID, type, channel)=>{
                 
             case "OP":
                 if(checkArgs(["string"])) return;
-                net.sendData("MODE " + GUI.current.name + " +o " + bits[1]);
+                net.sendData("MODE " + chan + " +o " + bits[1]);
                 addInfoOut("OP " + _input, "*");
                 break;
                 
             case "PART":
             case "LEAVE":
                 if(bits.length == 1){
-                    net.sendData("PART " + GUI.current.name);
+                    net.sendData("PART " + chan);
                 }else{
                     if(bits[1][0] == "#"){
                         if(bits.length == 2){
@@ -322,7 +322,7 @@ const parseInput = (input, cID, type, channel)=>{
                             net.sendData("PART " + bits[1] + " :" + _input.substr(bits[1].length + 1));
                         }
                     }else{
-                        net.sendData("PART " + GUI.current.name + " :" + _input.substr(bits[1].length + 1));
+                        net.sendData("PART " + chan + " :" + _input.substr(bits[1].length + 1));
                     }
                     
                 }
@@ -349,7 +349,7 @@ const parseInput = (input, cID, type, channel)=>{
                 
             case "QUIET":
                 if(checkArgs(["string"])) return;
-                net.sendData("MODE " + GUI.current.name + " +q " + bits[1]);
+                net.sendData("MODE " + chan + " +q " + bits[1]);
                 addInfoOut("QUIET " + bits[1], "*");
                 break;
                 
@@ -366,19 +366,19 @@ const parseInput = (input, cID, type, channel)=>{
                 
             case "TOPIC":
                 if(checkArgs(["string"])) return;
-                net.sendData("TOPIC " + GUI.current.name + " :" + _input);
+                net.sendData("TOPIC " + chan + " :" + _input);
                 addInfoOut("TOPIC " + _input, "*");
                 break;
                 
             case "UNBAN":
                 if(checkArgs(["string"])) return;
-                net.sendData("MODE " + GUI.current.name + " -b " + _input);
+                net.sendData("MODE " + chan + " -b " + _input);
                 addInfoOut("UNBAN " + bits[1], "*");
                 break;
                 
             case "UNQUIET":
                 if(checkArgs(["string"])) return;
-                net.sendData("MODE " + GUI.current.name + " -q " + _input);
+                net.sendData("MODE " + chan + " -q " + _input);
                 addInfoOut("UNQUIET " + bits[1], "*");
                 break;
                 
@@ -388,7 +388,10 @@ const parseInput = (input, cID, type, channel)=>{
                 tmpStr = getMask(bits[1]);
                 addInfo(tmpStr, "*");
                 break;
+            
+            case "POPUP":
                 
+                break;
                 
             case "HELP":
                 if(bits.length == 1){
@@ -430,8 +433,8 @@ const parseInput = (input, cID, type, channel)=>{
     }else{
         /* send message */
         if(input.trim().match(/(^\/)(ns\s|nickserv|(.*)nickserv)/) != null) return addInfo("Your message was not sent for security reasons. (Nickserv slip was detected)", "*");
-        net.sendData("PRIVMSG " + GUI.current.name + " :" + input);
-        net.addChannelMessage(GUI.current.type, GUI.current.name, {
+        net.sendData("PRIVMSG " + chan + " :" + input);
+        net.addChannelMessage(typ, chan, {
             type: "usermessage",
             nick: net.nick,
             mask: net.nick + "!~@~",
