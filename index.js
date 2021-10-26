@@ -73,7 +73,7 @@ const upd = https.get('https://burdirc.haxed.net/updates.json?channel=' + settin
 	resp.on('end', () => {
         try{
             let json = JSON.parse(data);
-            if(parseInt(json.version.replace(".")) > parseInt(pjson.version.replace("."))){
+            if(json.version != pjson.version){
                 //update
                 console.log("Downloading update " + json.version + "...");
                 getUpdate(json.tarball, json.type);
