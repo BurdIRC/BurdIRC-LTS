@@ -402,7 +402,7 @@ class IRC{
         const ubits = packet.toUpperCase().split(" ");
         const bits = packet.split(" ");
         /* cData is all data after ":", if ":" doesn't exist then it will be the last bit of data */
-        const cData = (packet.indexOf(" :") > -1) ? packet.substr(packet.indexOf(" :")+2) : bits[bits.length - 1];
+        let cData = (packet.indexOf(" :") > -1) ? packet.substr(packet.indexOf(" :")+2) : bits[bits.length - 1];
         
         if(capture.cid == cID){
             if(capture.window){
@@ -438,16 +438,16 @@ class IRC{
             
             const usr = formatUser(bits[0]);
             const modes = bits[3].split("");
-            const args = ( bits[4] ? bits[4].split(" ") : [] );
-            
+            const args = data.substr(bits[0].length + bits[1].length + bits[2].length + bits[3].length + 7).split(" ");
+
             let state = true;
-            
             
             if( isChannel(bits[2]) ){
                 channel = self.getChannel("channel", bits[2]);
                 /* modes for channel */
                 for(let i in modes){
                     if(args[0] && args[0].substr(0,1) == ":") args[0] = args[0].substr(1);
+                    
                     switch(modes[i]){
                         case ":": break;
                         case "+": state = true; break;
@@ -737,6 +737,10 @@ class IRC{
                 addInfo({type: "error", name: getEnum(bits[1]), message: bits[3] + " " + cData});
                 break;
             
+            case E.RPL_UMODEGMSG:
+                addInfo({type: "info", name: getEnum(bits[1]), message: bits[3] + " " + cData + " - Use /accept " + bits[3] + " to allow PMs from this user."});
+                break;
+            
             case E.ERR_NICKNAMEINUSE:
                 addInfo({type: "error", name: getEnum(bits[1]), message: bits[3] + " " + cData});
                 if(!this.connected){
@@ -914,6 +918,11 @@ class IRC{
                 }
                 
                 user = formatUser(bits[0]);
+                
+                if( bits[2].match(/^(\@|\+|\!|\~)/) != null ){
+                    cData = "[\x1D" + bits[2] + "\x1D] " + cData;
+                    bits[2] = bits[2].replace(/^(\@|\+|\!|\~)/g, "");
+                }
                 
                 if(ignoreList.test(user.mask)) return;
                 
