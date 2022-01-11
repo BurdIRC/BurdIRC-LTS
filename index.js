@@ -132,8 +132,23 @@ function startGUI(){
                     break;
                 }
             }
+        }else{
+            if(fs.existsSync("/usr/bin/google-chrome")){
+                cp.exec("/usr/bin/google-chrome --app=http://localhost:" + port + "/index.html");
+            }else if(fs.existsSync("/usr/bin/chromium")){
+                cp.exec("/usr/bin/chromium --app=http://localhost:" + port + "/index.html");
+            }
+            
         }
+        
+        
+        
+        
+        
         /**
+        /usr/bin/google-chrome
+        /usr/bin/chromium
+        
         setTimeout(function(){
             if(process.platform == "win32"){
                 cp.exec(start + " " + settings.browser + " --app=http://localhost:" + port + "/index.html");
