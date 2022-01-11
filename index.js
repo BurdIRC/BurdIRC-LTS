@@ -11,6 +11,16 @@ const args = process.argv.slice(2);
 
 const settings = require('./config.json');
 
+for(let i in args){
+    if( args[i].indexOf("=") > -1 ){
+        const item = args[i].split("=")[0].replace("--", "");
+        const val = args[i].split("=")[1];
+        settings[item] = val;
+    }
+}
+
+wsServer.autoclose = settings.autoclose || false;
+
 if(settings.browser == "edge") settings.browser = "msedge";
 
 const port = settings.serverPort;
@@ -30,6 +40,10 @@ function createHttpServer(){
 		wsServer.handle(request, socket, head);
 	});
 	
+    server.on('error', function(err){
+        console.log(err);
+    });
+    
 	console.log("BurdIRC server is running on port " + port);
 }
 
@@ -99,12 +113,33 @@ upd.on('error', (err) => {
 
 function startGUI(){
     const start = (process.platform == 'darwin' ? 'open': process.platform == 'win32' ? 'start': 'xdg-open');
-    if(settings.appwindow == true){
+    if(settings.appwindow){
+        if(process.platform == "win32"){
+            const browsers = [
+                "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+                process.env.USERPROFILE + "\\AppData\\Local\\Chrome\\Application\\chrome.exe",
+                process.env.USERPROFILE + "\\AppData\\Local\\Vivaldi\\Application\\vivaldi.exe",
+                "C:\\Users\\lueth\\AppData\\Local\\Vivaldi\\Application\\vivaldi.exe",
+                "C:\\Program Files\\BraveSoftware\\Brave-Browser\\Application\\brave.exe",
+                "C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe",
+                "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"
+            ];
+            console.log("Looking for a browser to use...");
+            for(let i in browsers){
+                if(fs.existsSync(browsers[i])){
+                    console.log("Found browser at " + browsers[i]);
+                    cp.exec(start + " \"\" \"" + browsers[i] + "\" --app=http://localhost:" + port + "/index.html");
+                    break;
+                }
+            }
+        }
+        /**
         setTimeout(function(){
             if(process.platform == "win32"){
                 cp.exec(start + " " + settings.browser + " --app=http://localhost:" + port + "/index.html");
             }
         },1000);
+        **/
     }else{
         console.log("Open the following URL in your web browser: http://localhost:" + port + "/");
     }

@@ -53,6 +53,7 @@ function setControl(sid,ws){
 }
 
 const wsServer = {
+    autoclose: false,
 	wss: new WebSocket.Server({noServer: true}),
 	handle: (request, socket, head) => {
 		wsServer.wss.handleUpgrade(request, socket, head, function connection(ws) {
@@ -99,6 +100,7 @@ const wsServer = {
                                         }
                                     }else if(bits[1] == "CLOSED"){
                                         removeControl(sid);
+                                        if(wsServer.autoclose != false) process.exit(1);
                                     }
                                 }else if(bits[0].match(/^([1-9])$/ig) != null){
                                     let control = getControl(sid,bits[0]);

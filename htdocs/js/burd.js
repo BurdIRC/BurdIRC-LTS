@@ -734,6 +734,7 @@ class IRC{
             case E.ERR_NOPRIVS:
             case E.RPL_SASLMECHS:
             case E.ERR_CHANOPRIVSNEEDED:
+            case E.ERR_UNIQOPRIVSNEEDED:
                 addInfo({type: "error", name: getEnum(bits[1]), message: bits[3] + " " + cData});
                 break;
             
@@ -843,6 +844,7 @@ class IRC{
                 let nicks = this.cache.slice(0, -1).split(" ");
                 channel = this.getChannel("channel", bits[3]);
                 for(let i in nicks){
+                    if(nicks[i].length == 0) continue;
                     let ni = this.userFlags(nicks[i].split("!")[0]);
                     let mask = ni.nick + "!" + (nicks[i].split("!")[1] || "null@null");
                     channel.users.push([ni.nick, ni.flags]);
@@ -865,8 +867,7 @@ class IRC{
                 user = formatUser(bits[4]);
                 this.addChannelMessage("channel", bits[3], {type: "info", message: "Topic set by " + user.nick + " on " + band.toDateString()});
                 break;
-                
-                
+            
                 
             case "MODE":
                 processMode();
@@ -994,6 +995,7 @@ class IRC{
                 
             case "JOIN":
                 this.cache = "";
+                if(bits[2].substr(0,1) == ":") bits[2] = bits[2].substr(1);
                 user = formatUser(bits[0]);
                 if(user.nick.toLowerCase() == this.nick.toLowerCase()){
                     this.addChannel("channel", bits[2]);
@@ -1014,7 +1016,7 @@ class IRC{
                     this.partUser("channel", bits[2], user.nick, user.mask, cData);
                 }
                 break;
-                
+           
             case "INVITE":
                 user = formatUser(bits[0]);
                 banners.add({
